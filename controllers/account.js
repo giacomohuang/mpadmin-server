@@ -16,40 +16,95 @@ class AccountController extends BaseController {
     ctx.body = { result: true }
   }
 
+  // 登录前置检查，仅验证账号密码是否正确
   static async signin(ctx) {
     // console.log('*********')
-
     const { accountname, password } = ctx.request.body
+    // 先删除旧的refreshToken的redis缓存
     const oldRefreshToken = ctx.request.headers['refreshtoken']
     if (oldRefreshToken) {
       const oldMd5Token = crypto
         .createHash('md5')
         .update(oldRefreshToken + process.env.SECRET_KEY_REFRESH)
         .digest('hex')
-      console.log(oldMd5Token)
       await ctx.redis.del(`auth:${oldMd5Token}`)
     }
-    // console.log(accountname, password)
+    // 验证账号/密码是否正确
     const cryptoPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(password).digest('hex')
     const account = await Account.findOne({ accountname })
+
+    console.log(cryptoPwd, account.password)
     if (!account || account.password !== cryptoPwd) {
       throw new CustomError(401, 'Invalid accountname or password', 1001)
     }
+    if (account.enable2FA) {
+      if (account.totpSecret) account.totpSecret = '*'
+      if (account.phone) account.phone = '*'
+      if (account.email) account.email = '*'
+      account.password = '*'
+      ctx.body = account
+    } else {
+      ctx.body = await AccountController.genToken(ctx, account)
+      // console.log(ctx.body)
+    }
+  }
+
+  // 两步验证
+  static async signin2FA(ctx) {
+    const { accountname, password, authMethod, code } = ctx.request.body
+    // 先验证账号密码是否正确，同时取出账户信息
+    const cryptoPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(password).digest('hex')
+    const account = await Account.findOne({ accountname })
+    // 如果账号密码错误，被前端攻击，抛异常
+    if (!account || account.password !== cryptoPwd) {
+      throw new CustomError(401, 'Invalid accountname or password', 1001)
+    }
+    let result2FA = false
+
+    // 根据不同的认证方式进行验证
+    switch (authMethod) {
+      case 'totp':
+        result2FA = speakeasy.totp.verify({
+          secret: account.secret,
+          encoding: 'base32',
+          token: code
+        })
+        break
+      case 'sms':
+        result2FA = true
+        break
+      case 'email':
+      default:
+        result2FA = true
+        break
+    }
+
+    // 两步验证通过了才能生成token
     // Generate JWT token
+    if (result2FA) {
+      ctx.body = await AccountController.genToken(ctx, account)
+    } else {
+      throw new CustomError(401, 'Authentication Failed', 1002)
+    }
+  }
+
+  static async genToken(ctx, account) {
     const accessToken = jwt.sign({ id: account._id, accountname: account.accountname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
     const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
     const md5Token = crypto
       .createHash('md5')
       .update(refreshToken + process.env.SECRET_KEY_REFRESH)
       .digest('hex')
-
+    // 缓存30天
     await ctx.redis.set(`auth:${md5Token}`, 't', 'EX', 2592000)
-    ctx.body = { accessToken, refreshToken }
-    console.log('====signin====')
+
+    console.log('====signin2FA passed====')
     console.log('refreshToken:', refreshToken)
-    console.log('md5:', md5Token)
+    console.log('refreshToken_md5:', md5Token)
+    return { accessToken, refreshToken }
   }
 
+  // 退登
   static async signout(ctx) {
     const refreshToken = ctx.request.headers['refreshtoken']
     console.log(refreshToken)
@@ -98,9 +153,7 @@ class AccountController extends BaseController {
     const authInfo = await Account.findOne({ _id: accountid }).select('areacode phone email totpSecret enable2FA')
     // 如果有totp秘钥，则置为*，不暴露给客户端
     console.log(authInfo)
-    if (authInfo.totpSecret) {
-      authInfo.totpSecret = '*'
-    }
+    if (authInfo.totpSecret) authInfo.totpSecret = '*'
     ctx.body = authInfo
   }
 

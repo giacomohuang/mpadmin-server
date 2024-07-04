@@ -5,7 +5,7 @@ class VerificationController {
   static async sendCodeByEmail(ctx) {
     const accountid = ctx.request.headers['accountid']
     if (!accountid) {
-      throw new CustomError(401, 'Authenication Failed', 101)
+      throw new CustomError(401, 'Authentication Failed', 101)
     }
     // 重发倒计时
     const nolock = await ctx.redis.set(`emaillock:${accountid}`, '*', 'NX', 'EX', 60)
@@ -27,7 +27,7 @@ class VerificationController {
   static async sendCodeBySMS(ctx) {
     const accountid = ctx.request.headers['accountid']
     if (!accountid) {
-      throw new CustomError(401, 'Authenication Failed', 103)
+      throw new CustomError(401, 'Authentication Failed', 103)
     }
     const nolock = await ctx.redis.set(`smslock:${accountid}`, '*', 'NX', 'EX', 60)
     if (nolock) {
