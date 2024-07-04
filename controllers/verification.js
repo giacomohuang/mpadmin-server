@@ -7,9 +7,9 @@ class VerificationController {
     if (!accountid) {
       throw new CustomError(401, 'Authenication Failed', 101)
     }
-    const result = await ctx.redis.set(`emaillock:${accountid}`, '*', 'NX', 'EX', 60)
-    console.log('redis result', result)
-    if (result) {
+    // 重发倒计时
+    const nolock = await ctx.redis.set(`emaillock:${accountid}`, '*', 'NX', 'EX', 60)
+    if (nolock) {
       const code = VerificationController.getRandomDigits(6)
       // TODO: 调用发送邮件
       // TODO
@@ -29,8 +29,8 @@ class VerificationController {
     if (!accountid) {
       throw new CustomError(401, 'Authenication Failed', 103)
     }
-    const result = await ctx.redis.set(`smslock:${accountid}`, '*', 'EX', 60)
-    if (result) {
+    const nolock = await ctx.redis.set(`smslock:${accountid}`, '*', 'NX', 'EX', 60)
+    if (nolock) {
       const code = VerificationController.getRandomDigits(6)
       // TODO: 调用发送邮件
       // TODO
