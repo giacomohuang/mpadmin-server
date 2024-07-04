@@ -18,7 +18,8 @@ const PORT = 3000
 app.use(bodyParser())
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    // origin: 'http://localhost:5173',
+    origin: '*',
     maxAge: 3600,
     allowMethods: 'GET,POST',
     exposeHeaders: 'Authorization,Newaccesstoken,Newrefreshtoken,Refreshtoken'
