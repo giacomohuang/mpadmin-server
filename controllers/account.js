@@ -66,30 +66,6 @@ class AccountController extends BaseController {
   static async verifyToken(ctx) {
     ctx.status = 200
     ctx.body = { verify: true }
-    // const { accessToken, refreshToken } = ctx.request.body
-    // try {
-    //   jwt.verify(accessToken, process.env.SECRET_KEY_ACCESS)
-    //   ctx.status = 200
-    //   ctx.body = { verify: true }
-    // } catch (err) {
-    //   if (err.name === 'TokenExpiredError') {
-    //     try {
-    //       console.log('refreshToken', refreshToken)
-    //       jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH)
-    //       const resp = await refresh(refreshToken, ctx)
-    //       const newAccessToken = resp.accessToken
-    //       const newRefreshToken = resp.refreshToken
-    //       ctx.status = 200
-    //       ctx.body = { verify: true, newAccessToken, newRefreshToken }
-    //     } catch (err) {
-    //       console.log('error here', err)
-    //       ctx.throw(401, 'Auth Failed 20001')
-    //     }
-    //   } else {
-    //     console.log(err.name)
-    //     ctx.throw(401, 'Auth Failed 20000')
-    //   }
-    // }
   }
 
   // 生成动态令牌的secret和激活地址
