@@ -18,11 +18,12 @@ const PORT = 3000
 app.use(bodyParser())
 app.use(
   cors({
-    // origin: 'http://localhost:5173',
+    // origin: 'http://localhost:8080',
     origin: '*',
     maxAge: 3600,
     allowMethods: 'GET,POST',
-    exposeHeaders: 'Authorization,Newaccesstoken,Newrefreshtoken,Refreshtoken'
+    exposeHeaders: 'Authorization,Newaccesstoken,Newrefreshtoken,Refreshtoken',
+    credentials: true
   })
 )
 // 统一异常处理中间件
