@@ -23,11 +23,8 @@ class AccountController extends BaseController {
     // 先删除旧的refreshToken的redis缓存
     const oldRefreshToken = ctx.request.headers['refreshtoken']
     if (oldRefreshToken) {
-      const oldMd5Token = crypto
-        .createHash('md5')
-        .update(oldRefreshToken + process.env.SECRET_KEY_REFRESH)
-        .digest('hex')
-      await ctx.redis.del(`auth:${oldMd5Token}`)
+      const oldSHAToken = crypto.createHmac('sha256', process.env.PWD_KEY).update(oldRefreshToken).digest('hex')
+      await ctx.redis.del(`auth:${oldSHAToken}`)
     }
     // 验证账号/密码是否正确
     const cryptoPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(password).digest('hex')
@@ -91,16 +88,13 @@ class AccountController extends BaseController {
   static async genToken(ctx, account) {
     const accessToken = jwt.sign({ id: account._id, accountname: account.accountname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
     const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
-    const md5Token = crypto
-      .createHash('md5')
-      .update(refreshToken + process.env.SECRET_KEY_REFRESH)
-      .digest('hex')
+    const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
     // 缓存30天
-    await ctx.redis.set(`auth:${md5Token}`, 't', 'EX', 2592000)
+    await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
 
     console.log('====signin2FA passed====')
     console.log('refreshToken:', refreshToken)
-    console.log('refreshToken_md5:', md5Token)
+    console.log('refreshToken_SHA256:', shaToken)
     return { accessToken, refreshToken }
   }
 
@@ -108,12 +102,9 @@ class AccountController extends BaseController {
   static async signout(ctx) {
     const refreshToken = ctx.request.headers['refreshtoken']
     console.log(refreshToken)
-    const md5Token = crypto
-      .createHash('md5')
-      .update(refreshToken + process.env.SECRET_KEY_REFRESH)
-      .digest('hex')
-    console.log(md5Token)
-    await ctx.redis.del(`auth:${md5Token}`)
+    const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
+    console.log(shaToken)
+    await ctx.redis.del(`auth:${shaToken}`)
     ctx.body = { result: true }
     //TODO：signout log
   }
