@@ -11,6 +11,7 @@ const ts = [authSign, authToken]
 
 accountRouter.post('/account/signup', authSign, AccountController.signup)
 accountRouter.post('/account/signin', authSign, AccountController.signin)
+accountRouter.post('/account/signin2FA', authSign, AccountController.signin2FA)
 accountRouter.post('/account/signout', authSign, AccountController.signout)
 accountRouter.post('/account/verifytoken', ...ts, AccountController.verifyToken)
 accountRouter.post('/account/generatetotpsecret', ...ts, AccountController.generateTotpSecret)

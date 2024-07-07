@@ -32,7 +32,7 @@ class AccountController extends BaseController {
 
     console.log(cryptoPwd, account.password)
     if (!account || account.password !== cryptoPwd) {
-      throw new CustomError(401, 'Invalid accountname or password', 1001)
+      throw new CustomError(400, 'Invalid accountname or password', 1001)
     }
     if (account.enable2FA) {
       if (account.totpSecret) account.totpSecret = '*'
@@ -49,23 +49,25 @@ class AccountController extends BaseController {
   // 两步验证
   static async signin2FA(ctx) {
     const { accountname, password, authMethod, code } = ctx.request.body
+
     // 先验证账号密码是否正确，同时取出账户信息
     const cryptoPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(password).digest('hex')
     const account = await Account.findOne({ accountname })
     // 如果账号密码错误，被前端攻击，抛异常
     if (!account || account.password !== cryptoPwd) {
-      throw new CustomError(401, 'Invalid accountname or password', 1001)
+      throw new CustomError(400, 'Invalid accountname or password', 1001)
     }
     let result2FA = false
-
+    console.log(account.totpSecret, code)
     // 根据不同的认证方式进行验证
     switch (authMethod) {
       case 'totp':
         result2FA = speakeasy.totp.verify({
-          secret: account.secret,
+          secret: account.totpSecret,
           encoding: 'base32',
           token: code
         })
+        console.log(result2FA)
         break
       case 'sms':
         result2FA = true
@@ -81,7 +83,7 @@ class AccountController extends BaseController {
     if (result2FA) {
       ctx.body = await AccountController.genToken(ctx, account)
     } else {
-      throw new CustomError(401, 'Authentication Failed', 1002)
+      throw new CustomError(400, 'Code Error', 1002)
     }
   }
 
@@ -91,10 +93,11 @@ class AccountController extends BaseController {
     const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
     // 缓存30天
     await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
-
-    console.log('====signin2FA passed====')
+    console.log('\n\n====GenToken====')
+    console.log('accessToken:', refreshToken)
     console.log('refreshToken:', refreshToken)
     console.log('refreshToken_SHA256:', shaToken)
+    console.log('====GenToken====\n\n')
     return { accessToken, refreshToken }
   }
 
