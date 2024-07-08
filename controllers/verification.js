@@ -3,7 +3,11 @@ const CustomError = require('../CustomError')
 class VerificationController {
   // 发送邮件验证码
   static async sendCodeByEmail(ctx) {
-    const accountid = ctx.request.headers['accountid']
+    let { email, accountid } = ctx.request.body
+    console.log('aaaaa', accountid)
+    if (!accountid) {
+      accountid = ctx.request.headers['accountid']
+    }
     if (!accountid) {
       throw new CustomError(401, 'Authentication Failed', 101)
     }
@@ -13,7 +17,6 @@ class VerificationController {
       const code = VerificationController.getRandomDigits(6)
       // TODO: 调用发送邮件
       // TODO
-
       // 生成随机数缓存，5分钟内有效
       await ctx.redis.set(`emailcode:${accountid}`, code, 'EX', 300)
       ctx.body = { result: true }
@@ -25,7 +28,10 @@ class VerificationController {
 
   // 发送短信验证码
   static async sendCodeBySMS(ctx) {
-    const accountid = ctx.request.headers['accountid']
+    let { areacode, phone, accountid } = ctx.request.body
+    if (!accountid) {
+      accountid = ctx.request.headers['accountid']
+    }
     if (!accountid) {
       throw new CustomError(401, 'Authentication Failed', 103)
     }

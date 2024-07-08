@@ -36,9 +36,7 @@ class AccountController extends BaseController {
     }
     if (account.enable2FA) {
       if (account.totpSecret) account.totpSecret = '*'
-      if (account.phone) account.phone = '*'
-      if (account.email) account.email = '*'
-      account.password = '*'
+      if (account.password) account.passoword = '*'
       ctx.body = account
     } else {
       ctx.body = await AccountController.genToken(ctx, account)
@@ -58,7 +56,7 @@ class AccountController extends BaseController {
       throw new CustomError(400, 'Invalid accountname or password', 1001)
     }
     let result2FA = false
-    console.log(account.totpSecret, code)
+    // console.log(account.totpSecret, code)
     // 根据不同的认证方式进行验证
     switch (authMethod) {
       case 'totp':
@@ -67,7 +65,7 @@ class AccountController extends BaseController {
           encoding: 'base32',
           token: code
         })
-        console.log(result2FA)
+        // console.log(result2FA)
         break
       case 'sms':
         result2FA = true
@@ -88,8 +86,8 @@ class AccountController extends BaseController {
   }
 
   static async genToken(ctx, account) {
-    const accessToken = jwt.sign({ id: account._id, accountname: account.accountname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
-    const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
+    const accessToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: account.realname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
+    const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: account.realname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
     const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
     // 缓存30天
     await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)

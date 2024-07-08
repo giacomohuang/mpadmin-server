@@ -58,10 +58,10 @@ const refresh = async (token, ctx) => {
       decoded = d
     }
   })
-  const { id, accountname } = decoded
+  const { id, accountname, realname } = decoded
   console.log('isExist', isExist)
-  const accessToken = jwt.sign({ id: id, accountname: accountname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
-  const refreshToken = jwt.sign({ id: id, accountname: accountname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
+  const accessToken = jwt.sign({ id: id, accountname: accountname, realname: realname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
+  const refreshToken = jwt.sign({ id: id, accountname: accountname, realname: realname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
   const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
   await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
   return { accessToken, refreshToken, id }

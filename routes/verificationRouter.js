@@ -6,7 +6,7 @@ const VerificationController = require('../controllers/verification')
 const verificationRouter = new Router()
 
 // Account & My
-const ts = [authSign, authToken]
+const ts = [authSign]
 verificationRouter.post('/verification/sendcodebyemail', ...ts, VerificationController.sendCodeByEmail)
 verificationRouter.post('/verification/sendcodebysms', ...ts, VerificationController.sendCodeBySMS)
 
