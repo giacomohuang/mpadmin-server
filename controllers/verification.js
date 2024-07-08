@@ -4,10 +4,6 @@ class VerificationController {
   // 发送邮件验证码
   static async sendCodeByEmail(ctx) {
     let { email, accountid } = ctx.request.body
-    console.log('aaaaa', accountid)
-    if (!accountid) {
-      accountid = ctx.request.headers['accountid']
-    }
     if (!accountid) {
       throw new CustomError(401, 'Authentication Failed', 101)
     }
@@ -29,9 +25,6 @@ class VerificationController {
   // 发送短信验证码
   static async sendCodeBySMS(ctx) {
     let { areacode, phone, accountid } = ctx.request.body
-    if (!accountid) {
-      accountid = ctx.request.headers['accountid']
-    }
     if (!accountid) {
       throw new CustomError(401, 'Authentication Failed', 103)
     }
