@@ -35,6 +35,10 @@ const accountSchema = new mongoose.Schema({
   enable2FA: {
     type: Boolean,
     required: false
+  },
+  isActivate: {
+    type: Boolean,
+    required: false
   }
 })
 

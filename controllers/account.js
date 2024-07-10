@@ -29,14 +29,12 @@ class AccountController extends BaseController {
     // 验证账号/密码是否正确
     const cryptoPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(password).digest('hex')
     const account = await Account.findOne({ accountname })
-
-    console.log(cryptoPwd, account.password)
     if (!account || account.password !== cryptoPwd) {
       throw new CustomError(400, 'Invalid accountname or password', 1001)
     }
     if (account.enable2FA) {
       if (account.totpSecret) account.totpSecret = '*'
-      if (account.password) account.passoword = '*'
+      if (account.password) account.password = ''
       ctx.body = account
     } else {
       ctx.body = await AccountController.genToken(ctx, account)
