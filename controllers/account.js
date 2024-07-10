@@ -34,7 +34,7 @@ class AccountController extends BaseController {
     }
     if (account.enable2FA) {
       if (account.totpSecret) account.totpSecret = '*'
-      if (account.password) account.password = ''
+      account.password = ''
       ctx.body = account
     } else {
       ctx.body = await AccountController.genToken(ctx, account)
@@ -108,6 +108,7 @@ class AccountController extends BaseController {
     //TODO：signout log
   }
 
+  // 验证token有效性，Vue router专用
   static async verifyToken(ctx) {
     ctx.status = 200
     ctx.body = { verify: true }
@@ -179,7 +180,7 @@ class AccountController extends BaseController {
     // TODO 验证verifycode
     const cryptoOldPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(oldPassword).digest('hex')
     const cryptoNewPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(newPassword).digest('hex')
-    const result = await Account.findOneAndUpdate({ _id: accountid, password: cryptoOldPwd, isActivate: false }, { password: cryptoNewPwd, isActivate: true })
+    const result = await Account.findOneAndUpdate({ _id: accountid, password: cryptoOldPwd, initPwd: false }, { password: cryptoNewPwd, initPwd: true })
     if (result) {
       ctx.body = { result: true }
     } else {

@@ -36,7 +36,7 @@ const accountSchema = new mongoose.Schema({
     type: Boolean,
     required: false
   },
-  isActivate: {
+  initPwd: {
     type: Boolean,
     required: false
   }

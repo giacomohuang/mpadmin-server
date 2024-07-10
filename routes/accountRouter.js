@@ -21,7 +21,7 @@ accountRouter.get('/account/hello', AccountController.hello)
 
 accountRouter.post('/account/getauthinfo', ...ts, AccountController.getAuthInfo)
 accountRouter.post('/account/updatepassword', ...ts, AccountController.updatePassword)
-accountRouter.post('/account/initpassword', ...ts, AccountController.initPassword)
+accountRouter.post('/account/initpassword', authSign, AccountController.initPassword)
 accountRouter.post('/account/updateemail', ...ts, AccountController.updateEmail)
 accountRouter.post('/account/updatephone', ...ts, AccountController.updatePhone)
 accountRouter.post('/account/update2fa', ...ts, AccountController.update2FA)
