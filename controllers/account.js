@@ -159,12 +159,27 @@ class AccountController extends BaseController {
 
   // 验证并更新邮箱
   static async updatePassword(ctx) {
-    const accountid = ctx.request.headers['accountid']
     const { oldPassword, newPassword } = ctx.request.body
+    const accountid = ctx.request.headers['accountid']
     // TODO 验证verifycode
     const cryptoOldPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(oldPassword).digest('hex')
     const cryptoNewPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(newPassword).digest('hex')
     const result = await Account.findOneAndUpdate({ _id: accountid, password: cryptoOldPwd }, { password: cryptoNewPwd })
+    if (result) {
+      ctx.body = { result: true }
+    } else {
+      ctx.body = { result: false }
+    }
+  }
+
+  // 首次登录时修改初始密码
+  static async initPassword(ctx) {
+    //
+    const { accountid, oldPassword, newPassword } = ctx.request.body
+    // TODO 验证verifycode
+    const cryptoOldPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(oldPassword).digest('hex')
+    const cryptoNewPwd = crypto.createHmac('sha256', process.env.PWD_KEY).update(newPassword).digest('hex')
+    const result = await Account.findOneAndUpdate({ _id: accountid, password: cryptoOldPwd, isActivate: false }, { password: cryptoNewPwd, isActivate: true })
     if (result) {
       ctx.body = { result: true }
     } else {
