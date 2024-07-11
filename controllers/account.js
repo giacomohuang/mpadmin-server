@@ -37,7 +37,11 @@ class AccountController extends BaseController {
       account.password = ''
       ctx.body = account
     } else {
-      ctx.body = await AccountController.genToken(ctx, account)
+      ctx.body = account
+      const { accessToken, refreshToken } = await AccountController.genToken(ctx, account)
+      ctx.body.accessToken = accessToken
+      ctx.body.refreshToken = refreshToken
+
       // console.log(ctx.body)
     }
   }
