@@ -32,18 +32,17 @@ class AccountController extends BaseController {
     if (!account || account.password !== cryptoPwd) {
       throw new CustomError(400, 'Invalid accountname or password', 1001)
     }
-    if (account.enable2FA) {
-      if (account.totpSecret) account.totpSecret = '*'
-      account.password = ''
-      ctx.body = account
-    } else {
-      ctx.body = account
+
+    if (account.totpSecret) account.totpSecret = '*'
+    account.password = ''
+    ctx.body = account
+
+    if (!account.enable2FA) {
       const { accessToken, refreshToken } = await AccountController.genToken(ctx, account)
       ctx.body.accessToken = accessToken
       ctx.body.refreshToken = refreshToken
-
-      // console.log(ctx.body)
     }
+    // console.log(ctx.body)
   }
 
   // 两步验证
