@@ -1,29 +1,26 @@
 const Router = require('@koa/router')
 const authToken = require('../middlewares/authtoken')
-const authSign = require('../middlewares/authsign')
 const AccountController = require('../controllers/account')
 
 // const router = new Router({ prefix: '/api' });
 const accountRouter = new Router()
 
 // Account & My
-const ts = [authSign, authToken]
-
-accountRouter.post('/account/signup', authSign, AccountController.signup)
-accountRouter.post('/account/signin', authSign, AccountController.signin)
-accountRouter.post('/account/signin2FA', authSign, AccountController.signin2FA)
-accountRouter.post('/account/signout', authSign, AccountController.signout)
-accountRouter.post('/account/verifytoken', ...ts, AccountController.verifyToken)
-accountRouter.post('/account/generatetotpsecret', ...ts, AccountController.generateTotpSecret)
-accountRouter.post('/account/verifytotp', ...ts, AccountController.verifyTotp)
-accountRouter.post('/account/updatetotpsecret', ...ts, AccountController.updateTotpSecret)
+accountRouter.post('/account/signup', AccountController.signup)
+accountRouter.post('/account/signin', AccountController.signin)
+accountRouter.post('/account/signin2FA', AccountController.signin2FA)
+accountRouter.post('/account/signout', AccountController.signout)
+accountRouter.post('/account/verifytoken', authToken, AccountController.verifyToken)
+accountRouter.post('/account/generatetotpsecret', authToken, AccountController.generateTotpSecret)
+accountRouter.post('/account/verifytotp', authToken, AccountController.verifyTotp)
+accountRouter.post('/account/updatetotpsecret', authToken, AccountController.updateTotpSecret)
 accountRouter.get('/account/hello', AccountController.hello)
 
-accountRouter.post('/account/getauthinfo', ...ts, AccountController.getAuthInfo)
-accountRouter.post('/account/updatepassword', ...ts, AccountController.updatePassword)
-accountRouter.post('/account/initpassword', authSign, AccountController.initPassword)
-accountRouter.post('/account/updateemail', ...ts, AccountController.updateEmail)
-accountRouter.post('/account/updatephone', ...ts, AccountController.updatePhone)
-accountRouter.post('/account/update2fa', ...ts, AccountController.update2FA)
+accountRouter.post('/account/getauthinfo', authToken, AccountController.getAuthInfo)
+accountRouter.post('/account/updatepassword', authToken, AccountController.updatePassword)
+accountRouter.post('/account/initpassword', AccountController.initPassword)
+accountRouter.post('/account/updateemail', authToken, AccountController.updateEmail)
+accountRouter.post('/account/updatephone', authToken, AccountController.updatePhone)
+accountRouter.post('/account/update2fa', authToken, AccountController.update2FA)
 
 module.exports = accountRouter

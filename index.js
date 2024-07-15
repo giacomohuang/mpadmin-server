@@ -2,8 +2,10 @@ const Koa = require('koa')
 const { bodyParser } = require('@koa/bodyparser')
 const accountRouter = require('./routes/accountRouter')
 const verificationRouter = require('./routes/verificationRouter')
+
 const mongoose = require('mongoose')
 const cors = require('@koa/cors')
+const authSign = require('./middlewares/authsign')
 const errorHandler = require('./middlewares/errorHandler')
 const Redis = require('ioredis')
 // const logger = require('koa-logger')
@@ -13,7 +15,6 @@ const Redis = require('ioredis')
 const app = new Koa()
 const redis = new Redis()
 const PORT = 3000
-
 // app.use(logger())
 app.use(bodyParser())
 app.use(
@@ -26,6 +27,7 @@ app.use(
     credentials: true
   })
 )
+app.use(authSign)
 // 统一异常处理中间件
 app.use(errorHandler)
 
@@ -39,6 +41,7 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
 // console.log(accountRouter)
 app.use(accountRouter.routes())
 app.use(verificationRouter.routes())
+
 // app.use(accountRouter.allowedMethods())
 // app.use(router.allowedMethods())
 
