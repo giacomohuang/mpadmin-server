@@ -50,7 +50,7 @@ const refresh = async (token, ctx) => {
     throw new CustomError(401, 'Authentication Failed', 903)
   }
   // 验证refreshtoken是否合法，不合法抛异常
-  let decoded, err
+  let decoded
   jwt.verify(refreshtoken_old, process.env.SECRET_KEY_REFRESH, (err, d) => {
     if (err) {
       throw new CustomError(401, 'Authentication Failed', 904)
