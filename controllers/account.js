@@ -6,6 +6,7 @@ const speakeasy = require('speakeasy')
 const CustomError = require('../CustomError')
 const OpenAIService = require('../services/openai')
 const { PassThrough } = require('stream')
+const { access } = require('fs')
 
 class AccountController extends BaseController {
   static async signup(ctx) {
@@ -16,7 +17,7 @@ class AccountController extends BaseController {
     ctx.body = { result: true }
   }
 
-  // 登录前置检查，仅验证账号密码是否正确
+  // 登录STEP1
   static async signin(ctx) {
     // console.log('*********')
     const { accountname, password } = ctx.request.body
@@ -35,17 +36,15 @@ class AccountController extends BaseController {
 
     if (account.totpSecret) account.totpSecret = '*'
     account.password = ''
-    ctx.body = account
-
+    ctx.body = account._doc
     if (!account.enable2FA) {
       const { accessToken, refreshToken } = await AccountController.genToken(ctx, account)
       ctx.body.accessToken = accessToken
       ctx.body.refreshToken = refreshToken
     }
-    // console.log(ctx.body)
   }
 
-  // 两步验证
+  // 登录STEP2-两步验证
   static async signin2FA(ctx) {
     const { accountname, password, authMethod, code } = ctx.request.body
 
@@ -146,9 +145,8 @@ class AccountController extends BaseController {
     console.log('accountId:', accountid)
     const authInfo = await Account.findOne({ _id: accountid }).select('areacode phone email totpSecret enable2FA')
     // 如果有totp秘钥，则置为*，不暴露给客户端
-    console.log(authInfo)
     if (authInfo.totpSecret) authInfo.totpSecret = '*'
-    ctx.body = authInfo
+    ctx.body = authInfo._doc
   }
 
   // 验证并更新邮箱
@@ -218,7 +216,6 @@ class AccountController extends BaseController {
     const { enable2FA } = ctx.request.body
     // TODO 验证verifycode
     const result = await Account.findOneAndUpdate({ _id: accountid }, { enable2FA })
-    console.log(result)
     ctx.body = { result: true }
   }
 

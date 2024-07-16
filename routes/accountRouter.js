@@ -14,7 +14,7 @@ accountRouter.post('/account/verifytoken', authToken, AccountController.verifyTo
 accountRouter.post('/account/generatetotpsecret', authToken, AccountController.generateTotpSecret)
 accountRouter.post('/account/verifytotp', authToken, AccountController.verifyTotp)
 accountRouter.post('/account/updatetotpsecret', authToken, AccountController.updateTotpSecret)
-accountRouter.get('/account/hello', AccountController.hello)
+accountRouter.post('/account/hello', AccountController.hello)
 
 accountRouter.post('/account/getauthinfo', authToken, AccountController.getAuthInfo)
 accountRouter.post('/account/updatepassword', authToken, AccountController.updatePassword)

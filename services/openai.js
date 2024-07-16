@@ -23,14 +23,16 @@ class OpenAIService {
           if (delta !== undefined) {
             // console.log(`data: ${delta}`)
             str += delta
-            stream.write(`data: ${delta.replace('\n', '\\x0A')}\n\n`)
+            // stream.write(`data: ${delta.replace('\n', '\\x0A')}\n\n`)
+            stream.write(delta)
           }
         }
       }
-      stream.write(`data: [DONE]\n\n`)
+      // stream.write(`data: [DONE]\n\n`)
+      stream.write('[DONE]')
       console.log(str)
     } catch (err) {
-      stream.write(`data: [DONE]\n\n`)
+      stream.write('[DONE]')
       console.log(err)
     }
   }

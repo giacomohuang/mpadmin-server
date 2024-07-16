@@ -1,19 +1,33 @@
 const Redis = require('ioredis')
 const crypto = require('crypto')
 const CustomError = require('../CustomError')
+const { time } = require('console')
 
 const authSign = async (ctx, next) => {
+  const NONCE_TTL = 600
+  const EXP_THRESHOLD = 600000
   console.log('authSign')
-  const params = sortJSON(ctx.request.body)
-  // console.log(params)
-  const paramsText = JSON.stringify(params)
-  console.log(paramsText)
-  const chiperText = crypto.createHmac('sha256', 'emDmpsE2Ad4wLLYwD66xjzY1eZhVHyEqSPrAxIcaC66xR9mkgzJJ9GswVyUyiWRb8MXfY9fKZlRuvEURySHMY8X6D5GqjMYKLUiIDs6Zq6uH9LJn4nArFje5SY0C1Yfk').update(paramsText).digest('hex')
-  console.log(chiperText)
-  if (ctx.headers['sign'] === chiperText) {
+  const timestamp = ctx.headers['timestamp']
+  const nonce = ctx.headers['nonce']
+  if (!timestamp || !nonce) {
+    throw new CustomError(401, 'Authentication Failed', 911)
+  }
+  const timestamp_server = Date.now()
+  let params = sortJSON(ctx.request.body)
+  console.log('params', params)
+  if (!params) params = {}
+  const paramsText = JSON.stringify(params) + nonce + timestamp
+  const chiperText = crypto.createHmac('sha256', process.env.SIGN_KEY).update(paramsText).digest('hex')
+  const signMatch = ctx.headers['sign'] === chiperText
+  // 判断时间戳是否过期，误差±10分钟
+  const timeNotExp = Math.abs(timestamp_server - timestamp) < EXP_THRESHOLD
+  const nonceNotUsed = !(await ctx.redis.del(`nonce:${nonce}`))
+  console.log(signMatch, timeNotExp, nonceNotUsed)
+  if (signMatch && timeNotExp && nonceNotUsed) {
+    // 将本次的nonce写入redis，并设置10分钟的过期时间
+    await ctx.redis.set(`nonce:${nonce}`, 'u', 'EX', NONCE_TTL)
     await next()
   } else {
-    console.log('authSign failed 910')
     throw new CustomError(401, 'Authentication Failed', 910)
   }
 }
