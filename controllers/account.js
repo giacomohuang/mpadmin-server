@@ -24,7 +24,7 @@ class AccountController extends BaseController {
     // 先删除旧的refreshToken的redis缓存
     const oldRefreshToken = ctx.request.headers['refreshtoken']
     if (oldRefreshToken) {
-      const oldSHAToken = crypto.createHmac('sha256', process.env.PWD_KEY).update(oldRefreshToken).digest('hex')
+      const oldSHAToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(oldRefreshToken).digest('hex')
       await ctx.redis.del(`auth:${oldSHAToken}`)
     }
     // 验证账号/密码是否正确
