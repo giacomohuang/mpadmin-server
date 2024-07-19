@@ -2,6 +2,7 @@ const Koa = require('koa')
 const { bodyParser } = require('@koa/bodyparser')
 const accountRouter = require('./routes/accountRouter')
 const verificationRouter = require('./routes/verificationRouter')
+const ossRouter = require('./routes/ossRouter')
 
 const mongoose = require('mongoose')
 const cors = require('@koa/cors')
@@ -27,7 +28,7 @@ app.use(
     credentials: true
   })
 )
-app.use(authSign)
+// app.use(authSign)
 // 统一异常处理中间件
 app.use(errorHandler)
 
@@ -39,8 +40,9 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
 })
 
 // console.log(accountRouter)
-app.use(accountRouter.routes())
-app.use(verificationRouter.routes())
+app.use(accountRouter.routes(), authSign)
+app.use(verificationRouter.routes(), authSign)
+app.use(ossRouter.routes())
 
 // app.use(accountRouter.allowedMethods())
 // app.use(router.allowedMethods())
