@@ -13,25 +13,27 @@ var minioClient = new Minio.Client({
 
 class OSSController extends BaseController {
   static async initNewMultipartUpload(ctx) {
-    const metaData = {
-      'Content-Type': 'application/octet-stream' // or whatever content type your file has
-      // Other metadata if needed
+    const headers = {
+      'Content-Type': 'application/octet-stream'
     }
     let { filename } = ctx.request.body
     let oldTags
     filename = decodeURIComponent(filename)
     let uploadId
+    console.log('====initNewMultipartUpload====')
     try {
       const previousUploadId = await minioClient.findUploadId('mpadmin', filename)
+      console.log('- previousUploadId', previousUploadId)
       if (!previousUploadId) {
-        uploadId = await minioClient.initiateNewMultipartUpload('mpadmin', filename, metaData)
+        uploadId = await minioClient.initiateNewMultipartUpload('mpadmin', filename, headers)
       } else {
+        console.log('**get oldTags**')
         uploadId = previousUploadId
         oldTags = await minioClient.listParts('mpadmin', filename, previousUploadId)
-        console.log(oldTags)
+        console.log('oldTags:', oldTags)
       }
 
-      console.log('uploadId', uploadId)
+      console.log('- uploadId:', uploadId)
       ctx.body = { uploadId, oldTags }
     } catch (err) {
       console.log(err)
@@ -39,12 +41,11 @@ class OSSController extends BaseController {
   }
   static async uploadPart(ctx) {
     const chunk = ctx.request.file
-    console.log(ctx.request.body)
+    // console.log(ctx.request.body)
     let { filename, uploadId, partNumber } = ctx.request.body
     filename = decodeURIComponent(filename)
 
-    console.log('=======================')
-    console.log('- uploadId:', uploadId)
+    console.log('====uploadPart====')
     console.log('- partNumber:', partNumber)
     // console.log('- hash:', hash)
     const options = {
@@ -62,18 +63,13 @@ class OSSController extends BaseController {
     }
     const response = await minioClient.makeRequestAsyncOmit(options, chunk.buffer)
     // const etag = await minioClient.uploadPart(partConfig)
-    console.log('==etag', response.headers.etag)
+    console.log('- etag', response.headers.etag)
     let etag = response.headers.etag
     if (etag) {
       etag = etag.replace(/^"/, '').replace(/"$/, '')
     } else {
       etag = ''
     }
-    // console.log(response)
-    // const etag = await minioClient.uploadPart(options, file.buffer)
-    // const result = await minioClient.makeRequestAsync(options, file.buffer)
-    // console.log(result.)
-    // ctx.status = 200
     ctx.body = { etag: etag, part: parseInt(partNumber) }
   }
 
@@ -81,7 +77,7 @@ class OSSController extends BaseController {
     let { filename, uploadId, etags } = ctx.request.body
     filename = decodeURIComponent(filename)
     const etagsJson = JSON.parse(etags)
-    console.log('***********etags********\n', etagsJson)
+    console.log('====completeMultipartUpload====')
     const result = await minioClient.completeMultipartUpload('mpadmin', filename, uploadId, etagsJson)
     minioClient
     ctx.body = result

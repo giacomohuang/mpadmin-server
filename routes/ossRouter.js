@@ -11,9 +11,9 @@ const multer = require('@koa/multer')
 const upload = multer()
 
 const ossRouter = new Router()
-ossRouter.post('/oss/uploadPart', upload.single('file'), authToken, OSSController.uploadPart)
+ossRouter.post('/oss/uploadPart', upload.single('file'), OSSController.uploadPart)
 
-ossRouter.post('/oss/initNewMultipartUpload', OSSController.initNewMultipartUpload)
-ossRouter.post('/oss/completeMultipartUpload', OSSController.completeMultipartUpload)
+ossRouter.post('/oss/initNewMultipartUpload', authToken, OSSController.initNewMultipartUpload)
+ossRouter.post('/oss/completeMultipartUpload', authToken, OSSController.completeMultipartUpload)
 
 module.exports = ossRouter
