@@ -28,9 +28,7 @@ class OSSController extends BaseController {
       } else {
         uploadId = previousUploadId
         oldTags = await minioClient.listParts('mpadmin', filename, previousUploadId)
-        oldTags.forEach((e) => {
-          oldTags[e.part] = e
-        })
+        console.log(oldTags)
       }
 
       console.log('uploadId', uploadId)
@@ -42,13 +40,13 @@ class OSSController extends BaseController {
   static async uploadPart(ctx) {
     const chunk = ctx.request.file
     console.log(ctx.request.body)
-    let { filename, uploadId, partNumber, hash, oldTags } = ctx.request.body
+    let { filename, uploadId, partNumber } = ctx.request.body
     filename = decodeURIComponent(filename)
-    oldTags = oldTags ? JSON.parse(oldTags) : ''
+
     console.log('=======================')
     console.log('- uploadId:', uploadId)
     console.log('- partNumber:', partNumber)
-    console.log('- hash:', hash)
+    // console.log('- hash:', hash)
     const options = {
       method: 'PUT',
       query: qs.stringify({
