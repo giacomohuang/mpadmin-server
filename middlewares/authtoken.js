@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const CustomError = require('../CustomError')
-
 const authToken = async (ctx, next) => {
-  console.log('authToken')
+  let { num } = ctx.request.body
+  console.log('==call func authToken===', num)
   let token = '',
     decoded,
     err
@@ -20,51 +20,25 @@ const authToken = async (ctx, next) => {
   // 如果accesstoken验证通过，放行
   if (!err) {
     ctx.request.headers['accountid'] = decoded.id
+    console.log('- Token is Valid')
     await next()
   }
   // 如果是token过期
   // 开始验证refreshtoken
   else if (err.name === 'TokenExpiredError') {
-    const result = await refresh(ctx.request.headers['refreshtoken'], ctx)
-    ctx.set({
-      newaccesstoken: result.accessToken,
-      newrefreshtoken: result.refreshToken
-    })
-    ctx.request.headers['accountid'] = result.id
-    console.log('token is refreshed!!!!!!')
+    // const result = await refreshToken(refreshtoken_old, ctx)
+    // ctx.set({
+    //   newaccesstoken: result.accessToken,
+    //   newrefreshtoken: result.refreshToken
+    // })
+    // ctx.request.headers['accountid'] = result.id
+    ctx.status = 409
     await next()
   }
   // 如果accesstoken内容验证失败
   else {
     throw new CustomError(401, 'Authentication Failed', 902)
   }
-}
-
-const refresh = async (token, ctx) => {
-  console.log('!!!start refreshing token!!!')
-  // 判断redis中有没有sha的refreshtoken,
-  const refreshtoken_old = token
-  const shaToken_old = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshtoken_old).digest('hex')
-  const isExist = await ctx.redis.del(`auth:${shaToken_old}`)
-  if (!isExist) {
-    throw new CustomError(401, 'Authentication Failed', 903)
-  }
-  // 验证refreshtoken是否合法，不合法抛异常
-  let decoded
-  jwt.verify(refreshtoken_old, process.env.SECRET_KEY_REFRESH, (err, d) => {
-    if (err) {
-      throw new CustomError(401, 'Authentication Failed', 904)
-    } else {
-      decoded = d
-    }
-  })
-  const { id, accountname, realname } = decoded
-  console.log('isExist', isExist)
-  const accessToken = jwt.sign({ id: id, accountname: accountname, realname: realname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
-  const refreshToken = jwt.sign({ id: id, accountname: accountname, realname: realname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
-  const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
-  await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
-  return { accessToken, refreshToken, id }
 }
 
 module.exports = authToken

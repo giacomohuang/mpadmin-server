@@ -2,6 +2,7 @@ const Minio = require('minio')
 const path = require('path')
 const BaseController = require('./base')
 const qs = require('qs')
+const crypto = require('crypto')
 
 var minioClient = new Minio.Client({
   endPoint: '127.0.0.1',
@@ -17,24 +18,29 @@ class OSSController extends BaseController {
       'Content-Type': 'application/octet-stream'
     }
     let { filename } = ctx.request.body
+    const uuid = crypto.randomUUID({ disableEntropyCache: true })
+    const ext = filename.match(/\.([0-9a-z]+)$/i)?.[1] || ''
+    const prefix = `${uuid.substring(0, 2)}/${uuid.substring(2, 4)}/${uuid.substring(4, 6)}`
+    const newFilename = `${prefix}/${uuid}.${ext}`
+
     let oldTags
     filename = decodeURIComponent(filename)
     let uploadId
     console.log('====initNewMultipartUpload====')
     try {
-      const previousUploadId = await minioClient.findUploadId('mpadmin', filename)
+      const previousUploadId = await minioClient.findUploadId('mpadmin', newFilename)
       console.log('- previousUploadId', previousUploadId)
       if (!previousUploadId) {
-        uploadId = await minioClient.initiateNewMultipartUpload('mpadmin', filename, headers)
+        uploadId = await minioClient.initiateNewMultipartUpload('mpadmin', newFilename, headers)
       } else {
         console.log('**get oldTags**')
         uploadId = previousUploadId
-        oldTags = await minioClient.listParts('mpadmin', filename, previousUploadId)
+        oldTags = await minioClient.listParts('mpadmin', newFilename, previousUploadId)
         console.log('oldTags:', oldTags)
       }
 
       console.log('- uploadId:', uploadId)
-      ctx.body = { uploadId, oldTags }
+      ctx.body = { uploadId, newFilename, oldTags }
     } catch (err) {
       console.log(err)
     }

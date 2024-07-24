@@ -112,8 +112,7 @@ class AccountController extends BaseController {
 
   // 验证token有效性，Vue router专用
   static async verifyToken(ctx) {
-    ctx.status = 200
-    ctx.body = { verify: true }
+    ctx.body = {}
   }
 
   // 生成动态令牌的secret和激活地址
@@ -233,6 +232,39 @@ class AccountController extends BaseController {
     ctx.req.on('close', () => {
       console.log('client closed')
     })
+  }
+
+  static async refreshToken(ctx) {
+    const { refreshToken } = ctx.request.body
+    if (!refreshToken) throw new CustomError(401, 'Authentication Failed', 905)
+    console.log('==call func refresh===')
+    // 判断redis中有没有sha的refreshtoken
+    const shaToken_old = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
+
+    const isExist = await ctx.redis.del(`auth:${shaToken_old}`)
+    if (!isExist) {
+      throw new CustomError(401, 'Authentication Failed' + shaToken_old, 903)
+    }
+    // 验证refreshtoken是否合法，不合法抛异常
+    let decoded
+    jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH, (err, d) => {
+      if (err) {
+        throw new CustomError(401, 'Authentication Failed', 904)
+      } else {
+        decoded = d
+      }
+    })
+    const { id, accountname, realname } = decoded
+    const newAccessToken = jwt.sign({ id: id, accountname: accountname, realname: realname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
+    const newRefreshToken = jwt.sign({ id: id, accountname: accountname, realname: realname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
+    const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(newRefreshToken).digest('hex')
+    await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
+    ctx.body = { newAccessToken, newRefreshToken, id }
+  }
+
+  static async hello1(ctx) {
+    const { num } = ctx.request.body
+    ctx.body = 'hello:' + num
   }
 }
 

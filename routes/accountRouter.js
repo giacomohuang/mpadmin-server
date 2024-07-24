@@ -6,6 +6,8 @@ const AccountController = require('../controllers/account')
 const accountRouter = new Router()
 
 // Account & My
+accountRouter.post('/account/refreshtoken', AccountController.refreshToken)
+
 accountRouter.post('/account/signup', AccountController.signup)
 accountRouter.post('/account/signin', AccountController.signin)
 accountRouter.post('/account/signin2FA', AccountController.signin2FA)
@@ -15,6 +17,7 @@ accountRouter.post('/account/generatetotpsecret', authToken, AccountController.g
 accountRouter.post('/account/verifytotp', authToken, AccountController.verifyTotp)
 accountRouter.post('/account/updatetotpsecret', authToken, AccountController.updateTotpSecret)
 accountRouter.post('/account/hello', AccountController.hello)
+accountRouter.post('/account/hello1', authToken, AccountController.hello1)
 
 accountRouter.post('/account/getauthinfo', authToken, AccountController.getAuthInfo)
 accountRouter.post('/account/updatepassword', authToken, AccountController.updatePassword)
