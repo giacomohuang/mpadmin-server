@@ -52,7 +52,10 @@ class OSSController extends BaseController {
     filename = decodeURIComponent(filename)
 
     console.log('====uploadPart====')
+    console.log('- filename:', filename)
+    console.log('- uploadId:', uploadId)
     console.log('- partNumber:', partNumber)
+
     // console.log('- hash:', hash)
     const options = {
       method: 'PUT',
