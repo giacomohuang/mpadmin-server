@@ -42,7 +42,7 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
 // console.log(accountRouter)
 app.use(accountRouter.routes(), authSign)
 app.use(verificationRouter.routes(), authSign)
-app.use(ossRouter.routes())
+app.use(ossRouter.routes(), authSign)
 
 // app.use(accountRouter.allowedMethods())
 // app.use(router.allowedMethods())
