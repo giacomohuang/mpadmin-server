@@ -24,7 +24,7 @@ app.use(
     origin: '*',
     maxAge: 3600,
     allowMethods: 'GET,POST',
-    exposeHeaders: 'Authorization,Newaccesstoken,Newrefreshtoken,Refreshtoken',
+    exposeHeaders: 'Authorization,Refreshtoken',
     credentials: true
   })
 )
