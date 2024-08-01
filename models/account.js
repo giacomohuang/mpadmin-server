@@ -16,6 +16,26 @@ const accountSchema = new mongoose.Schema({
     required: true,
     encrypted: true
   },
+  orgId: {
+    type: String,
+    required: false
+  },
+  entityId: {
+    type: String,
+    required: false
+  },
+  avatar: {
+    type: String,
+    required: false
+  },
+  lastSiginTime: {
+    type: Date,
+    required: false
+  },
+  lastSigninIp: {
+    type: String,
+    required: false
+  },
   areacode: {
     type: String,
     required: false
@@ -24,11 +44,15 @@ const accountSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  totpSecret: {
+  email: {
     type: String,
     required: false
   },
-  email: {
+  type: {
+    type: Number,
+    required: false
+  },
+  totpSecret: {
     type: String,
     required: false
   },
@@ -38,6 +62,14 @@ const accountSchema = new mongoose.Schema({
   },
   initPwd: {
     type: Boolean,
+    required: false
+  },
+  OperatorId: {
+    type: String,
+    required: false
+  },
+  OperateTime: {
+    type: Date,
     required: false
   }
 })
