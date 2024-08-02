@@ -9,12 +9,30 @@ const { PassThrough } = require('stream')
 const { access } = require('fs')
 
 class AccountController extends BaseController {
+  // 注册新用户
   static async signup(ctx) {
     const { accountname, password } = ctx.request.body
     const account = new Account({ accountname, password })
     await account.save()
     ctx.status = 201
     ctx.body = { result: true }
+  }
+
+  static async list(ctx) {
+    // console.log('aaaa')
+    const { page, limit, query } = ctx.request.body
+    console.log(page, limit, query)
+    const accounts = await Account.find(query)
+      .skip(page * limit)
+      .limit(limit)
+      .exec()
+    console.log(accounts)
+    const total = await Account.countDocuments(query)
+    ctx.body = {
+      accounts,
+      total: total,
+      pages: Math.ceil(total / limit)
+    }
   }
 
   // 登录STEP1
@@ -85,6 +103,7 @@ class AccountController extends BaseController {
     }
   }
 
+  // 生成accessToken和refreshToken
   static async genToken(ctx, account) {
     const accessToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: account.realname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
     const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: account.realname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })

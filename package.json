@@ -27,5 +27,8 @@
     "openai": "^4.52.4",
     "redis": "^4.6.15",
     "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1"
   }
 }

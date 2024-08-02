@@ -26,4 +26,6 @@ accountRouter.post('/account/updateemail', authToken, AccountController.updateEm
 accountRouter.post('/account/updatephone', authToken, AccountController.updatePhone)
 accountRouter.post('/account/update2fa', authToken, AccountController.update2FA)
 
+accountRouter.post('/account/list', authToken, AccountController.list)
+
 module.exports = accountRouter

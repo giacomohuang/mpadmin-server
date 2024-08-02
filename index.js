@@ -9,6 +9,7 @@ const cors = require('@koa/cors')
 const authSign = require('./middlewares/authsign')
 const errorHandler = require('./middlewares/errorHandler')
 const Redis = require('ioredis')
+const { genAccounts } = require('./services/dataGen')
 // const logger = require('koa-logger')
 
 // require('dotenv').config() //for using variables from .env file.

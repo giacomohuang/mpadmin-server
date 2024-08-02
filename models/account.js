@@ -69,6 +69,11 @@ const accountSchema = new mongoose.Schema({
     type: Boolean,
     required: false
   },
+  // 状态: [启用:1 禁用:0]
+  status: {
+    type: Number,
+    required: false
+  },
   // 操作人id
   OperatorId: {
     type: String,
