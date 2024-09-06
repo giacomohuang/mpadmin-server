@@ -1,6 +1,7 @@
 const Koa = require('koa')
 const { bodyParser } = require('@koa/bodyparser')
 const accountRouter = require('./routes/accountRouter')
+const permissionRouter = require('./routes/permissionRouter')
 const verificationRouter = require('./routes/verificationRouter')
 const ossRouter = require('./routes/ossRouter')
 
@@ -44,6 +45,7 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
 app.use(accountRouter.routes(), authSign)
 app.use(verificationRouter.routes(), authSign)
 app.use(ossRouter.routes(), authSign)
+app.use(permissionRouter.routes(), authSign)
 
 // app.use(accountRouter.allowedMethods())
 // app.use(router.allowedMethods())
