@@ -37,6 +37,11 @@ const resourceSchema = new mongoose.Schema({
   level: {
     type: Number,
     required: true
+  },
+  // 排序
+  order: {
+    type: Number,
+    required: false
   }
 })
 
