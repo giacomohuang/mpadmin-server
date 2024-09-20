@@ -27,13 +27,40 @@ class ResourceController extends BaseController {
   static async update(ctx) {
     console.log('update')
     const item = ctx.request.body
-    const resource = await Resource.replaceOne({ id: item.id }, item)
-    ctx.body = resource
-    console.log(resource)
+    const res = await Resource.replaceOne({ id: item.id }, item)
+    ctx.body = res
+    console.log(res)
+  }
+
+  static async reorder(ctx) {
+    // console.log('reorder')
+    const req = ctx.request.body
+    const data = req.map((id, index) => {
+      return {
+        updateOne: {
+          filter: { id: id },
+          update: { order: index + 1 }
+        }
+      }
+    })
+    const res = await Resource.bulkWrite(data)
+    // const data = req.map((id, index) => {
+    //   return { filter: { id: id }, update: { order: index + 1 } }
+    // })
+    // console.log(data)
+
+    // const res = Resource.updateMany(
+    //   data.map(({ filter, update }) => {
+    //     return { filter, update }
+    //   }),
+    //   { multi: true }
+    // )
+
+    ctx.body = res
   }
 
   static async remove(ctx) {
-    console.log('hello')
+    console.log('remove')
     const ids = ctx.request.body
     let res
     if (ids.length > 1) {

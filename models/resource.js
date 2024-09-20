@@ -16,7 +16,7 @@ const resourceSchema = new mongoose.Schema({
   // 组织id
   pid: {
     type: Number,
-    required: true
+    required: false
   },
   // 编码
   code: {
