@@ -8,6 +8,8 @@ class ResourceController extends BaseController {
     let resource
     if (isOneLevel) {
       resource = await Resource.find({ pid: pid })
+    } else if (pid == null) {
+      resource = await Resource.find()
     } else {
       const regex = new RegExp(`^${pid}-`)
       resource = await Resource.find({ $or: [{ path: regex }, { id: pid }] })
