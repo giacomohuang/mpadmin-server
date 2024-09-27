@@ -21,9 +21,10 @@ class ResourceController extends BaseController {
     const item = ctx.request.body
     const nextId = await ResourceController.getNextId('resourceid')
     item.id = nextId
-    item.path = item.path + '-' + nextId
+    item.path = item.path ? item.path + '-' + nextId : nextId
     const resource = await Resource.create(item)
     ctx.body = resource
+    console.log(resource)
   }
 
   static async update(ctx) {

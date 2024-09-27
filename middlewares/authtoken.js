@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const CustomError = require('../CustomError')
 const authToken = async (ctx, next) => {
-  console.log('==call func authToken===')
+  // console.log('==call func authToken===')
   let token = '',
     decoded,
     err
@@ -19,7 +19,7 @@ const authToken = async (ctx, next) => {
   // 如果accesstoken验证通过，放行
   if (!err) {
     ctx.request.headers['accountid'] = decoded.id
-    console.log('- Token is Valid')
+    // console.log('- Token is Valid')
     await next()
   }
   // 如果是token过期

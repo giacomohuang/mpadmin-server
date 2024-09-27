@@ -256,7 +256,7 @@ class AccountController extends BaseController {
   static async refreshToken(ctx) {
     const { refreshToken } = ctx.request.body
     if (!refreshToken) throw new CustomError(401, 'Authentication Failed', 905)
-    console.log('==call func refresh===')
+    // console.log('==call func refresh===')
     // 判断redis中有没有sha的refreshtoken
     const shaToken_old = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
 

@@ -22,7 +22,7 @@ const authSign = async (ctx, next) => {
   // 判断时间戳是否过期，误差±10分钟
   const timeNotExp = Math.abs(timestamp_server - timestamp) < EXP_THRESHOLD
   const nonceNotUsed = !(await ctx.redis.del(`nonce:${nonce}`))
-  console.log(signMatch, timeNotExp, nonceNotUsed)
+  // console.log(signMatch, timeNotExp, nonceNotUsed)
   if (signMatch && timeNotExp && nonceNotUsed) {
     // 将本次的nonce写入redis，并设置10分钟的过期时间
     await ctx.redis.set(`nonce:${nonce}`, 'u', 'EX', NONCE_TTL)
