@@ -71,16 +71,10 @@ class RoleController extends BaseController {
   }
 
   static async remove(ctx) {
-    const { id } = ctx.request.body
+    const { path } = ctx.request.body
     // 创建一个正则表达式来匹配所有需要删除的角色ID及其子角色
-    const regex = new RegExp(`^${id}-`)
     // 使用 $or 操作符来匹配所有符合条件的文档
-    const res = await Role.deleteMany({
-      $or: [
-        { id: id }, // 直接匹配要删除的ID
-        { path: regex } // 匹配子角色
-      ]
-    })
+    const res = await Role.deleteMany({ path: new RegExp(`^${path}(-\\d+)*$`) })
     ctx.body = res
     console.log(res)
   }

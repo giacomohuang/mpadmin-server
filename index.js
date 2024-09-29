@@ -3,6 +3,7 @@ const { bodyParser } = require('@koa/bodyparser')
 const accountRouter = require('./routes/accountRouter')
 const permissionRouter = require('./routes/permissionRouter')
 const verificationRouter = require('./routes/verificationRouter')
+const orgRouter = require('./routes/orgRouter')
 const ossRouter = require('./routes/ossRouter')
 
 const mongoose = require('mongoose')
@@ -10,7 +11,7 @@ const cors = require('@koa/cors')
 const authSign = require('./middlewares/authsign')
 const errorHandler = require('./middlewares/errorHandler')
 const Redis = require('ioredis')
-const { genAccounts } = require('./services/dataGen')
+
 // const logger = require('koa-logger')
 
 // require('dotenv').config() //for using variables from .env file.
@@ -46,6 +47,7 @@ app.use(accountRouter.routes(), authSign)
 app.use(verificationRouter.routes(), authSign)
 app.use(ossRouter.routes(), authSign)
 app.use(permissionRouter.routes(), authSign)
+app.use(orgRouter.routes(), authSign)
 
 // app.use(accountRouter.allowedMethods())
 // app.use(router.allowedMethods())

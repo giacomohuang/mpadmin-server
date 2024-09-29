@@ -1,19 +1,19 @@
 const mongoose = require('mongoose')
 
 const resourceSchema = new mongoose.Schema({
-  // 资源名称
-  name: {
-    type: String,
-    required: true,
-    unique: true
-  },
   // id
   id: {
     type: Number,
     required: true,
     unique: true
   },
-  // 组织id
+  // 资源名称
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  // 父id
   pid: {
     type: Number,
     required: false
@@ -42,6 +42,12 @@ const resourceSchema = new mongoose.Schema({
   order: {
     type: Number,
     required: false
+  },
+  // 状态：0禁用 1启用
+  status: {
+    type: Number,
+    required: false,
+    default: 1
   }
 })
 

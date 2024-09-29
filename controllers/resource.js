@@ -63,18 +63,12 @@ class ResourceController extends BaseController {
   }
 
   static async remove(ctx) {
-    console.log('remove')
-    const ids = ctx.request.body
-    let res
-    if (ids.length > 1) {
-      res = await Resource.deleteMany({ id: { $in: ids } })
-      console.log('remove many')
-    } else {
-      res = await Resource.deleteOne({ id: ids[0] })
-      console.log('remove one')
-    }
+    const { path } = ctx.request.body
+    // 创建一个正则表达式来匹配所有需要删除的资源ID及其子角色
+
+    // 使用 $or 操作符来匹配所有符合条件的文档
+    const res = await Resource.deleteMany({ path: new RegExp(`^${path}(-\\d+)*$`) })
     ctx.body = res
-    console.log(res)
   }
 }
 module.exports = ResourceController

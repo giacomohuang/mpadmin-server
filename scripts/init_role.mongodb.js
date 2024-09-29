@@ -7,7 +7,8 @@ const roles = [
     pid: null,
     path: '1',
     order: 1,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 2,
@@ -17,7 +18,8 @@ const roles = [
     pid: null,
     path: '2',
     order: 2,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ const roles = [
     pid: null,
     path: '3',
     order: 3,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 4,
@@ -37,7 +40,8 @@ const roles = [
     path: '3-4',
     pid: 3,
     order: 4,
-    level: 2
+    level: 2,
+    status: 1
   },
   {
     id: 5,
@@ -47,7 +51,8 @@ const roles = [
     pid: 3,
     path: '3-5',
     order: 1,
-    level: 2
+    level: 2,
+    status: 1
   },
   {
     id: 6,
@@ -57,7 +62,8 @@ const roles = [
     pid: null,
     path: '6',
     order: 4,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 7,
@@ -67,7 +73,8 @@ const roles = [
     pid: 6,
     path: '6-7',
     order: 1,
-    level: 2
+    level: 2,
+    status: 1
   },
   {
     id: 8,
@@ -77,7 +84,8 @@ const roles = [
     pid: null,
     path: '8',
     order: 5,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 9,
@@ -87,7 +95,8 @@ const roles = [
     pid: 8,
     path: '8-9',
     order: 1,
-    level: 2
+    level: 2,
+    status: 1
   },
   {
     id: 10,
@@ -97,7 +106,8 @@ const roles = [
     pid: null,
     path: '10',
     order: 10,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 11,
@@ -107,7 +117,19 @@ const roles = [
     pid: 10,
     path: '10-11',
     order: 1,
-    level: 2
+    level: 2,
+    status: 1
+  },
+  {
+    id: 15,
+    name: '小市场专员',
+    description: '执行小小市场营销计划',
+    resources: [1, 2, 3, 4],
+    pid: 11,
+    path: '10-11-15',
+    order: 1,
+    level: 3,
+    status: 1
   },
   {
     id: 12,
@@ -117,7 +139,8 @@ const roles = [
     pid: null,
     path: '12',
     order: 12,
-    level: 1
+    level: 1,
+    status: 1
   },
   {
     id: 13,
@@ -127,7 +150,8 @@ const roles = [
     pid: 12,
     path: '12-13',
     order: 1,
-    level: 2
+    level: 2,
+    status: 1
   },
   {
     id: 14,
@@ -137,7 +161,8 @@ const roles = [
     pid: 12,
     path: '12-14',
     order: 2,
-    level: 2
+    level: 2,
+    status: 1
   }
 ]
 
