@@ -8,8 +8,9 @@ class OrgController extends BaseController {
     ctx.body = res
   }
 
+  // 根据id获取组织信息
   static async get(ctx) {
-    const { id } = ctx.request.query
+    const { id } = ctx.request.body
     const res = await Org.findOne({ id })
     ctx.body = res
   }
@@ -61,28 +62,23 @@ class OrgController extends BaseController {
 
   // 删除组织
   static async remove(ctx) {
-    const { id } = ctx.request.query
-    const orgToDelete = await Org.findOne({ id: id })
-
-    if (!orgToDelete) {
-      ctx.throw(404, '组织不存在')
-    }
-
+    const { path } = ctx.request.body
     // 删除组织及其所有子组织
-    const res = await Org.deleteMany({ path: new RegExp(`^${orgToDelete.path}(-\\d+)*$`) })
-
+    const res = await Org.deleteMany({ path: new RegExp(`^${path}(-\\d+)*$`) })
     ctx.body = res
   }
 
   // 重新排序
   static async reorder(ctx) {
     const req = ctx.request.body
-    const bulkOps = req.map((id, index) => ({
-      updateOne: {
-        filter: { id },
-        update: { $set: { order: index + 1 } }
+    const bulkOps = req.map((id, index) => {
+      return {
+        updateOne: {
+          filter: { id: id },
+          update: { order: index + 1 }
+        }
       }
-    }))
+    })
 
     const res = await Org.bulkWrite(bulkOps)
     ctx.body = res
