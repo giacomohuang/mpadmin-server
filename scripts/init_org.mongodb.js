@@ -28,9 +28,9 @@ const data = [
     path: '1-2'
   },
   {
-    id: 100,
-    name: '市场部',
-    fullname: '猫猫集团-市场部',
+    id: 10,
+    name: '销售管理部',
+    fullname: '猫猫集团-销售管理部',
     type: 0,
     isEntity: false,
     leaderId: null,
@@ -39,7 +39,7 @@ const data = [
     status: 1,
     pid: 2,
     level: 3,
-    path: '1-2-100'
+    path: '1-2-10'
   },
   {
     id: 3,
@@ -63,7 +63,7 @@ const data = [
     isEntity: false,
     leaderId: null,
     leaderName: '陈伟',
-    order: 3,
+    order: 9,
     status: 1,
     pid: 1,
     level: 2,
@@ -112,6 +112,7 @@ const data = [
     level: 2,
     path: '1-7'
   },
+
   {
     id: 8,
     name: '华东区域',
@@ -128,7 +129,7 @@ const data = [
   },
   {
     id: 9,
-    name: '华东区域',
+    name: '华北区域',
     fullname: '猫猫集团-华北区域',
     type: 0,
     isEntity: false,

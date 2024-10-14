@@ -20,45 +20,14 @@ class OrgController extends BaseController {
     const item = ctx.request.body
     const nextId = await OrgController.getNextId('orgid')
     item.id = nextId
-    item.path = item.pid ? `${item.pid}-${nextId}` : `${nextId}`
+    item.path = item.path ? item.path + '-' + nextId : nextId
     item.level = item.path.split('-').length
-
     const res = await Org.create(item)
     ctx.body = res
   }
 
-  // 更新组织
-  static async update(ctx) {
-    const item = ctx.request.body
-    const { id } = item
-
-    // 检查是否存在
-    const existingOrg = await Org.findOne({ id })
-    if (!existingOrg) {
-      ctx.throw(404, '组织不存在')
-    }
-
-    // 更新组织
-    const res = await Org.findOneAndUpdate({ id }, item, { new: true })
-
-    // 如果 path 发生变化，更新所有子组织的 path
-    if (existingOrg.path !== item.path) {
-      const oldPath = existingOrg.path
-      const newPath = item.path
-      await Org.updateMany({ path: new RegExp(`^${oldPath}-`) }, [
-        {
-          $set: {
-            path: {
-              $concat: [newPath, { $substr: ['$path', { $strLenCP: oldPath }, { $subtract: [{ $strLenCP: '$path' }, { $strLenCP: oldPath }] }] }]
-            },
-            level: { $size: { $split: ['$path', '-'] } }
-          }
-        }
-      ])
-    }
-
-    ctx.body = res
-  }
+  // 更新组织信息
+  static async update(ctx) {}
 
   // 删除组织
   static async remove(ctx) {
@@ -70,12 +39,16 @@ class OrgController extends BaseController {
 
   // 重新排序
   static async reorder(ctx) {
-    const req = ctx.request.body
-    const bulkOps = req.map((id, index) => {
+    console.log('重新排序')
+    const items = ctx.request.body
+    console.log(items)
+    const bulkOps = items.map((item) => {
+      const { id, ...updateData } = item
+      console.log(id, updateData)
       return {
         updateOne: {
           filter: { id: id },
-          update: { order: index + 1 }
+          update: { $set: updateData }
         }
       }
     })
