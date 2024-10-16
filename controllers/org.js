@@ -15,13 +15,34 @@ class OrgController extends BaseController {
     ctx.body = res
   }
 
+  static async rename(ctx) {
+    const { id, name, fullname, path } = ctx.request.body
+    console.log(id, name, fullname, path)
+    // 更新当前元素
+    const updateResult = await Org.updateOne({ id }, { name, fullname })
+    // 更新所有子元素的fullname
+    const updateChildrenResult = await Org.updateMany({ path: new RegExp(`^${path}-`) }, [{ $set: { fullname: { $concat: [fullname, '-', '$name'] } } }])
+
+    const res = {
+      current: updateResult,
+      children: updateChildrenResult
+    }
+
+    console.log(res)
+    ctx.body = res
+  }
+
+  static async update(ctx) {
+    const item = ctx.request.body
+    const res = await Org.replaceOne({ id: item.id }, item)
+    ctx.body = res
+  }
   // 添加组织
   static async add(ctx) {
     const item = ctx.request.body
     const nextId = await OrgController.getNextId('orgid')
     item.id = nextId
     item.path = item.path ? item.path + '-' + nextId : nextId
-    item.level = item.path.split('-').length
     const res = await Org.create(item)
     ctx.body = res
   }

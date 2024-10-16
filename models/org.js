@@ -51,15 +51,14 @@ const orgSchema = new mongoose.Schema({
     type: Number,
     default: null
   },
-  // 组织层级
-  level: {
-    type: Number,
-    required: true
-  },
   // 组织路径，用于表示层级关系
   path: {
     type: String,
     required: true
+  },
+  roles: {
+    type: Array,
+    default: []
   }
 })
 

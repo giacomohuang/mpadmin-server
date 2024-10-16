@@ -19,6 +19,9 @@ router.post('/org/remove', OrgController.remove)
 // 重新排序组织
 router.post('/org/reorder', OrgController.reorder)
 
+// 重命名组织
+router.post('/org/rename', OrgController.rename)
+
 // 获取组织
 router.post('/org/get', OrgController.get)
 
