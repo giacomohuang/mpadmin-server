@@ -33,8 +33,9 @@ class OrgController extends BaseController {
   }
 
   static async update(ctx) {
-    const item = ctx.request.body
-    const res = await Org.replaceOne({ id: item.id }, item)
+    console.log('update')
+    const { id, ...updateData } = ctx.request.body
+    const res = await Org.findOneAndUpdate({ id: id }, { $set: updateData }, { new: true, runValidators: true })
     ctx.body = res
   }
   // 添加组织
@@ -46,9 +47,6 @@ class OrgController extends BaseController {
     const res = await Org.create(item)
     ctx.body = res
   }
-
-  // 更新组织信息
-  static async update(ctx) {}
 
   // 删除组织
   static async remove(ctx) {
