@@ -1,4 +1,4 @@
-const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
+import { OpenAIClient, AzureKeyCredential } from '@azure/openai'
 
 class OpenAIService {
   static async sendMessage(stream, text) {
@@ -37,4 +37,5 @@ class OpenAIService {
     }
   }
 }
-module.exports = OpenAIService
+
+export default OpenAIService

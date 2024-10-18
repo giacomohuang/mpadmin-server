@@ -1,9 +1,8 @@
-const Router = require('@koa/router')
-const authToken = require('../middlewares/authtoken')
-const ResourceController = require('../controllers/resource')
-const RoleController = require('../controllers/role')
+import Router from '@koa/router'
+import authToken from '../middlewares/authtoken.js'
+import ResourceController from '../controllers/resource.js'
+import RoleController from '../controllers/role.js'
 
-// const router = new Router({ prefix: '/api' });
 const permissionRouter = new Router()
 
 // Account & My
@@ -19,4 +18,4 @@ permissionRouter.post('/permission/role/remove', authToken, RoleController.remov
 permissionRouter.post('/permission/role/update', authToken, RoleController.update)
 permissionRouter.post('/permission/role/reorder', authToken, RoleController.reorder)
 
-module.exports = permissionRouter
+export default permissionRouter

@@ -1,12 +1,7 @@
-const Router = require('@koa/router')
-const authToken = require('../middlewares/authtoken')
-const OSSController = require('../controllers/oss')
-
-const multer = require('@koa/multer')
-
-// const multer = require('multer')
-
-// 配置multer
+import Router from '@koa/router'
+import authToken from '../middlewares/authtoken.js'
+import OSSController from '../controllers/oss.js'
+import multer from '@koa/multer'
 
 const upload = multer()
 
@@ -16,4 +11,4 @@ ossRouter.post('/oss/uploadPart', upload.single('file'), authToken, OSSControlle
 ossRouter.post('/oss/initNewMultipartUpload', authToken, OSSController.initNewMultipartUpload)
 ossRouter.post('/oss/completeMultipartUpload', authToken, OSSController.completeMultipartUpload)
 
-module.exports = ossRouter
+export default ossRouter

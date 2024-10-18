@@ -1,10 +1,9 @@
-const Minio = require('minio')
-const path = require('path')
-const BaseController = require('./base')
-const qs = require('qs')
-const crypto = require('crypto')
+import * as Minio from 'minio'
+import BaseController from './base.js'
+import qs from 'qs'
+import crypto from 'crypto'
 
-var minioClient = new Minio.Client({
+const minioClient = new Minio.Client({
   endPoint: '127.0.0.1',
   port: 9000,
   useSSL: false,
@@ -45,9 +44,9 @@ class OSSController extends BaseController {
       console.log(err)
     }
   }
+
   static async uploadPart(ctx) {
     const chunk = ctx.request.file
-    // console.log(ctx.request.body)
     let { filename, uploadId, partNumber } = ctx.request.body
     filename = decodeURIComponent(filename)
 
@@ -56,22 +55,16 @@ class OSSController extends BaseController {
     console.log('- uploadId:', uploadId)
     console.log('- partNumber:', partNumber)
 
-    // console.log('- hash:', hash)
     const options = {
       method: 'PUT',
       query: qs.stringify({
         partNumber: parseInt(partNumber),
         uploadId
       }),
-      // headers: {
-      //   'Content-Length': chunk.size,
-      //   'Content-MD5': hash
-      // },
       bucketName: 'mpadmin',
       objectName: filename
     }
     const response = await minioClient.makeRequestAsyncOmit(options, chunk.buffer)
-    // const etag = await minioClient.uploadPart(partConfig)
     console.log('- etag', response.headers.etag)
     let etag = response.headers.etag
     if (etag) {
@@ -88,9 +81,9 @@ class OSSController extends BaseController {
     const etagsJson = JSON.parse(etags)
     console.log('====completeMultipartUpload====')
     const result = await minioClient.completeMultipartUpload('mpadmin', filename, uploadId, etagsJson)
-    minioClient
+
     ctx.body = result
   }
 }
 
-module.exports = OSSController
+export default OSSController

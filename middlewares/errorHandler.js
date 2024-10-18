@@ -12,4 +12,5 @@ const errorHandler = async (ctx, next) => {
     console.log(err)
   }
 }
-module.exports = errorHandler
+
+export default errorHandler

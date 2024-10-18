@@ -1,20 +1,15 @@
-const Koa = require('koa')
-const { bodyParser } = require('@koa/bodyparser')
-const accountRouter = require('./routes/accountRouter')
-const permissionRouter = require('./routes/permissionRouter')
-const verificationRouter = require('./routes/verificationRouter')
-const orgRouter = require('./routes/orgRouter')
-const ossRouter = require('./routes/ossRouter')
-
-const mongoose = require('mongoose')
-const cors = require('@koa/cors')
-const authSign = require('./middlewares/authsign')
-const errorHandler = require('./middlewares/errorHandler')
-const Redis = require('ioredis')
-
-// const logger = require('koa-logger')
-
-// require('dotenv').config() //for using variables from .env file.
+import Koa from 'koa'
+import { bodyParser } from '@koa/bodyparser'
+import accountRouter from './routes/accountRouter.js'
+import permissionRouter from './routes/permissionRouter.js'
+import verificationRouter from './routes/verificationRouter.js'
+import orgRouter from './routes/orgRouter.js'
+import ossRouter from './routes/ossRouter.js'
+import mongoose from 'mongoose'
+import cors from '@koa/cors'
+import authSign from './middlewares/authsign.js'
+import errorHandler from './middlewares/errorHandler.js'
+import Redis from 'ioredis'
 
 const app = new Koa()
 const redis = new Redis()

@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const CustomError = require('../CustomError')
+import jwt from 'jsonwebtoken'
+import CustomError from '../CustomError.js'
+
 const authToken = async (ctx, next) => {
   // console.log('==call func authToken===')
   let token = '',
@@ -40,4 +40,4 @@ const authToken = async (ctx, next) => {
   }
 }
 
-module.exports = authToken
+export default authToken

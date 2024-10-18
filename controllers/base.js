@@ -1,4 +1,5 @@
-const Counter = require('../models/counter')
+import Counter from '../models/counter.js'
+
 class BaseController {
   constructor() {}
   static async getNextId(name) {
@@ -25,4 +26,4 @@ class BaseController {
   }
 }
 
-module.exports = BaseController
+export default BaseController

@@ -1,5 +1,5 @@
-const BaseController = require('./base')
-const Org = require('../models/org')
+import BaseController from './base.js'
+import Org from '../models/org.js'
 
 class OrgController extends BaseController {
   // 列出组织
@@ -78,4 +78,4 @@ class OrgController extends BaseController {
   }
 }
 
-module.exports = OrgController
+export default OrgController

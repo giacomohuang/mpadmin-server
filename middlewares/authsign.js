@@ -1,7 +1,5 @@
-const Redis = require('ioredis')
-const crypto = require('crypto')
-const CustomError = require('../CustomError')
-const { time } = require('console')
+import crypto from 'crypto'
+import CustomError from '../CustomError.js'
 
 const authSign = async (ctx, next) => {
   const NONCE_TTL = 600
@@ -51,4 +49,4 @@ function sortJSON(obj) {
   return sortedObj
 }
 
-module.exports = authSign
+export default authSign

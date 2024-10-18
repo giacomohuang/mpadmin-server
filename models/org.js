@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const orgSchema = new mongoose.Schema({
   // 组织ID，唯一标识符
@@ -68,4 +68,4 @@ const orgSchema = new mongoose.Schema({
   }
 })
 
-module.exports = mongoose.model('Org', orgSchema)
+export default mongoose.model('Org', orgSchema)

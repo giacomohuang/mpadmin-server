@@ -1,5 +1,5 @@
-const BaseController = require('./base')
-const Role = require('../models/role')
+import BaseController from './base.js'
+import Role from '../models/role.js'
 
 class RoleController extends BaseController {
   static async list(ctx) {
@@ -13,6 +13,7 @@ class RoleController extends BaseController {
     }
     ctx.body = res
   }
+
   static async add(ctx) {
     const item = ctx.request.body
     const nextId = await RoleController.getNextId('roleid')
@@ -79,4 +80,5 @@ class RoleController extends BaseController {
     console.log(res)
   }
 }
-module.exports = RoleController
+
+export default RoleController

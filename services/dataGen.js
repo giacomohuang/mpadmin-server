@@ -1,5 +1,5 @@
-const { fakerZH_CN: faker } = require('@faker-js/faker')
-const Account = require('../models/account')
+import { fakerZH_CN as faker } from '@faker-js/faker'
+import Account from '../models/account.js'
 
 const genAccounts = async (num) => {
   let accounts = []
@@ -26,4 +26,4 @@ const genAccounts = async (num) => {
   await Account.insertMany(accounts)
 }
 
-module.exports = { genAccounts }
+export { genAccounts }

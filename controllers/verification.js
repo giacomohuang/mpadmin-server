@@ -1,4 +1,4 @@
-const CustomError = require('../CustomError')
+import CustomError from '../CustomError.js'
 
 class VerificationController {
   // 发送邮件验证码
@@ -50,4 +50,5 @@ class VerificationController {
       .padStart(length, '0')
   }
 }
-module.exports = VerificationController
+
+export default VerificationController

@@ -1,5 +1,5 @@
-const BaseController = require('./base')
-const Resource = require('../models/resource')
+import BaseController from './base.js'
+import Resource from '../models/resource.js'
 
 class ResourceController extends BaseController {
   static async list(ctx) {
@@ -71,4 +71,5 @@ class ResourceController extends BaseController {
     ctx.body = res
   }
 }
-module.exports = ResourceController
+
+export default ResourceController

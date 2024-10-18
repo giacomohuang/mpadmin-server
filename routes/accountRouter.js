@@ -1,8 +1,7 @@
-const Router = require('@koa/router')
-const authToken = require('../middlewares/authtoken')
-const AccountController = require('../controllers/account')
+import Router from '@koa/router'
+import authToken from '../middlewares/authtoken.js'
+import AccountController from '../controllers/account.js'
 
-// const router = new Router({ prefix: '/api' });
 const accountRouter = new Router()
 
 // Account & My
@@ -30,4 +29,4 @@ accountRouter.post('/account/list', authToken, AccountController.list)
 accountRouter.post('/account/get', authToken, AccountController.get)
 accountRouter.post('/account/searchbyname', authToken, AccountController.searchByName)
 
-module.exports = accountRouter
+export default accountRouter

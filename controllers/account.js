@@ -1,11 +1,11 @@
-const BaseController = require('./base')
-const Account = require('../models/account')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const speakeasy = require('speakeasy')
-const CustomError = require('../CustomError')
-const OpenAIService = require('../services/openai')
-const { PassThrough } = require('stream')
+import BaseController from './base.js'
+import Account from '../models/account.js'
+import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
+import speakeasy from 'speakeasy'
+import CustomError from '../CustomError.js'
+import OpenAIService from '../services/openai.js'
+import { PassThrough } from 'stream'
 
 class AccountController extends BaseController {
   // 注册新用户
@@ -320,4 +320,4 @@ class AccountController extends BaseController {
   }
 }
 
-module.exports = AccountController
+export default AccountController

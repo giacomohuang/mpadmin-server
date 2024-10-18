@@ -1,6 +1,5 @@
-const Router = require('@koa/router')
-const authToken = require('../middlewares/authtoken')
-const OrgController = require('../controllers/org')
+import Router from '@koa/router'
+import OrgController from '../controllers/org.js'
 
 const router = new Router()
 
@@ -25,4 +24,4 @@ router.post('/org/rename', OrgController.rename)
 // 获取组织
 router.post('/org/get', OrgController.get)
 
-module.exports = router
+export default router
