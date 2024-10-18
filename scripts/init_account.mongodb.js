@@ -1,13 +1,16 @@
 const { fakerZH_CN: faker } = require('@faker-js/faker')
 const crypto = require('crypto')
+const { getUniquePingyinForName, getUniquePingyinForCommon, getAllComPingyinForStr } = require('../utils/pinyin.cjs')
 const accounts = []
 
 const defaultAccount = {
   accountname: 'admin',
   realname: '超级管理员',
   alias: 'super admin',
+  pinyin: 'chaojiguanliyuan,CJGLY',
   password: '3deca356cdc09f5bcc1966f2e10f315d07dce7adb4f3b1a453878fef771dc960', // 使用bcrypt加密密码
   orgId: null,
+  orgFullName: null,
   entityId: null,
   avatar: faker.image.avatar(),
   areacode: '021',
@@ -27,11 +30,15 @@ accounts.push(defaultAccount)
 // 生成1000条测试数据
 const generateTestData = (count) => {
   for (let i = 0; i < count; i++) {
+    const realname = faker.person.fullName()
+    const py = getUniquePingyinForName(realname)
     const account = {
       accountname: faker.internet.userName() + faker.string.alphanumeric(3),
-      realname: faker.person.fullName(),
+      realname: realname,
+      pinyin: py.fristPy + ',' + py.fullPy,
       password: crypto.createHmac('sha256', 'ABCDEFG@12345686').update('Udkri47%4f8').digest('hex'), // 使用bcrypt加密密码
       orgId: null,
+      orgFullName: null,
       entityId: faker.string.uuid(),
       avatar: faker.image.avatar(),
       areacode: '86',

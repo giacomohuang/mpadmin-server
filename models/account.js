@@ -42,6 +42,11 @@ const accountSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  // 组织完整名称
+  orgFullName: {
+    type: String,
+    required: false
+  },
   // 实体id
   entityId: {
     type: String,

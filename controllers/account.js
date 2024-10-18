@@ -49,7 +49,7 @@ class AccountController extends BaseController {
       return
     }
     const query = {
-      $or: [{ accountname: regex }, { realname: regex }, { engname: regex }, { aliasname: regex }]
+      $or: [{ accountname: regex }, { realname: regex }, { engname: regex }, { aliasname: regex }, { pinyin: regex }]
     }
 
     const skip = (page - 1) * limit
