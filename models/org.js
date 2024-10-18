@@ -29,7 +29,7 @@ const orgSchema = new mongoose.Schema({
   },
   // 组织负责人ID
   leaderId: {
-    type: Number,
+    type: String,
     default: null
   },
   // 组织负责人姓名
@@ -56,7 +56,13 @@ const orgSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // 组织角色
   roles: {
+    type: Array,
+    default: []
+  },
+  // 成员id列表
+  members: {
     type: Array,
     default: []
   }

@@ -10,7 +10,8 @@ const data = [
     order: 1,
     status: 1,
     pid: null,
-    path: '1'
+    path: '1',
+    members: []
   },
   {
     id: 2,
@@ -23,7 +24,8 @@ const data = [
     order: 1,
     status: 1,
     pid: 1,
-    path: '1-2'
+    path: '1-2',
+    members: []
   },
   {
     id: 10,
@@ -36,7 +38,8 @@ const data = [
     order: 1,
     status: 1,
     pid: 2,
-    path: '1-2-10'
+    path: '1-2-10',
+    members: []
   },
   {
     id: 3,
@@ -49,7 +52,8 @@ const data = [
     order: 2,
     status: 1,
     pid: 1,
-    path: '1-3'
+    path: '1-3',
+    members: []
   },
   {
     id: 4,
@@ -62,7 +66,8 @@ const data = [
     order: 9,
     status: 1,
     pid: 1,
-    path: '1-4'
+    path: '1-4',
+    members: []
   },
   {
     id: 5,
@@ -76,7 +81,8 @@ const data = [
     order: 1,
     status: 1,
     pid: 4,
-    path: '1-4-5'
+    path: '1-4-5',
+    members: []
   },
   {
     id: 6,
@@ -89,7 +95,8 @@ const data = [
     order: 2,
     status: 1,
     pid: 4,
-    path: '1-4-6'
+    path: '1-4-6',
+    members: []
   },
   {
     id: 7,
@@ -102,7 +109,8 @@ const data = [
     order: 4,
     status: 1,
     pid: 1,
-    path: '1-7'
+    path: '1-7',
+    members: []
   },
 
   {
@@ -116,7 +124,8 @@ const data = [
     order: 1,
     status: 1,
     pid: 7,
-    path: '1-7-8'
+    path: '1-7-8',
+    members: []
   },
   {
     id: 9,
@@ -129,7 +138,8 @@ const data = [
     order: 2,
     status: 1,
     pid: 7,
-    path: '1-7-9'
+    path: '1-7-9',
+    members: []
   }
 ]
 

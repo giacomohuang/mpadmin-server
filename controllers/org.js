@@ -5,6 +5,7 @@ class OrgController extends BaseController {
   // 列出组织
   static async list(ctx) {
     const res = await Org.find()
+    console.log(res)
     ctx.body = res
   }
 

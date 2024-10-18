@@ -11,7 +11,25 @@ const accountSchema = new mongoose.Schema({
   realname: {
     type: String,
     required: true,
-    unique: true
+    unique: false
+  },
+  // 英文名
+  engname: {
+    type: String,
+    unique: false,
+    required: false
+  },
+  // 别名
+  aliasname: {
+    type: String,
+    unique: false,
+    required: false
+  },
+  // 拼音
+  pinyin: {
+    type: String,
+    unique: false,
+    required: false
   },
   // 密码
   password: {

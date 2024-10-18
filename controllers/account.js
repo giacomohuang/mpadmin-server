@@ -6,7 +6,6 @@ const speakeasy = require('speakeasy')
 const CustomError = require('../CustomError')
 const OpenAIService = require('../services/openai')
 const { PassThrough } = require('stream')
-const { access } = require('fs')
 
 class AccountController extends BaseController {
   // 注册新用户
@@ -23,7 +22,7 @@ class AccountController extends BaseController {
     const { page, limit, query } = ctx.request.body
     console.log(page, limit, query)
     const accounts = await Account.find(query)
-      .skip(page * limit)
+      .skip((page - 1) * limit)
       .limit(limit)
       .exec()
     console.log(accounts)
@@ -35,9 +34,39 @@ class AccountController extends BaseController {
     }
   }
 
+  static async get(ctx) {
+    const { id } = ctx.request.body
+    const res = await Account.findById(id)
+    ctx.body = res
+    console.log(res)
+  }
+
+  static async searchByName(ctx) {
+    const { keyword, page = 1, limit = 10 } = ctx.request.body
+    const regex = new RegExp(keyword, 'i')
+    if (keyword === '') {
+      ctx.body = []
+      return
+    }
+    const query = {
+      $or: [{ accountname: regex }, { realname: regex }, { engname: regex }, { aliasname: regex }]
+    }
+
+    const skip = (page - 1) * limit
+    const res = await Account.find(query).skip(skip).limit(limit).exec()
+
+    const total = await Account.countDocuments(query)
+
+    ctx.body = {
+      accounts: res,
+      total: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit)
+    }
+  }
+
   // 登录STEP1
   static async signin(ctx) {
-    // console.log('*********')
     const { accountname, password } = ctx.request.body
     // 先删除旧的refreshToken的redis缓存
     const oldRefreshToken = ctx.request.headers['refreshtoken']
@@ -105,8 +134,8 @@ class AccountController extends BaseController {
 
   // 生成accessToken和refreshToken
   static async genToken(ctx, account) {
-    const accessToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: account.realname }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
-    const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: account.realname }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
+    const accessToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: encodeURIComponent(account.realname) }, process.env.SECRET_KEY_ACCESS, { expiresIn: '30s' })
+    const refreshToken = jwt.sign({ id: account._id, accountname: account.accountname, realname: encodeURIComponent(account.realname) }, process.env.SECRET_KEY_REFRESH, { expiresIn: '30d' })
     const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
     // 缓存30天
     await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
@@ -258,11 +287,11 @@ class AccountController extends BaseController {
     if (!refreshToken) throw new CustomError(401, 'Authentication Failed', 905)
     // console.log('==call func refresh===')
     // 判断redis中有没有sha的refreshtoken
+    // console.log('token to refresh', refreshToken)
     const shaToken_old = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(refreshToken).digest('hex')
-
     const isExist = await ctx.redis.del(`auth:${shaToken_old}`)
     if (!isExist) {
-      throw new CustomError(401, 'Authentication Failed' + shaToken_old, 903)
+      throw new CustomError(401, 'Authentication Failed.' + shaToken_old, 903)
     }
     // 验证refreshtoken是否合法，不合法抛异常
     let decoded
@@ -279,6 +308,10 @@ class AccountController extends BaseController {
     const shaToken = crypto.createHmac('sha256', process.env.SECRET_KEY_REFRESH).update(newRefreshToken).digest('hex')
     await ctx.redis.set(`auth:${shaToken}`, 't', 'EX', 2592000)
     ctx.body = { newAccessToken, newRefreshToken, id }
+    console.log('refresh token')
+    console.log('newAccessToken', newAccessToken)
+    console.log('newRefreshToken', newRefreshToken)
+    console.log('id', id)
   }
 
   static async hello1(ctx) {
