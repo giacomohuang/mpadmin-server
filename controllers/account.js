@@ -189,9 +189,10 @@ class AccountController extends BaseController {
 
   static async getAuthInfo(ctx) {
     const accountid = ctx.request.headers['accountid']
-    console.log('accountId:', accountid)
+    console.log('accountid:', accountid)
     const authInfo = await Account.findOne({ _id: accountid }).select('areacode phone email totpSecret enable2FA')
     // 如果有totp秘钥，则置为*，不暴露给客户端
+    console.log(authInfo)
     if (authInfo.totpSecret) authInfo.totpSecret = '*'
     ctx.body = authInfo._doc
   }
