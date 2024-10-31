@@ -2,6 +2,9 @@ import * as Minio from 'minio'
 import BaseController from './base.js'
 import qs from 'qs'
 import crypto from 'crypto'
+import { optimize } from 'svgo'
+import Icon from '../models/icon.js'
+import { nanoid } from 'nanoid'
 
 const minioClient = new Minio.Client({
   endPoint: '127.0.0.1',
@@ -84,6 +87,83 @@ class OSSController extends BaseController {
 
     ctx.body = result
   }
-}
 
+  static async svgIconUpload(ctx) {
+    const { file } = ctx.request
+    const uuid = nanoid(10)
+    const newFilename = `${uuid}.svg`
+
+    // 读取上传的 SVG 内容
+    const svgContent = file.buffer.toString('utf8').replace(/(fill|stroke)="([^"]+)"/g, (match, attr) => {
+      // 保留 none 值，其他颜色值都替换为 currentColor
+      if (match.includes('"none"') || !match.includes('#000000')) {
+        return match
+      }
+      return `${attr}="currentColor"`
+    })
+
+    // 使用 SVGO 优化
+    const optimized = optimize(svgContent, {
+      multipass: true,
+      plugins: [
+        {
+          name: 'preset-default',
+          params: {
+            overrides: {
+              removeViewBox: false
+            }
+          }
+        },
+        'cleanupIds',
+        {
+          name: 'removeAttrs',
+          params: {
+            attrs: ['class', 'data-name']
+          }
+        }
+      ]
+    })
+
+    // 使用 Minio 的 putObject 进行简单上传
+    await minioClient.putObject('svgicon', newFilename, optimized.data, {
+      'Content-Type': 'image/svg+xml'
+    })
+    ctx.body = {
+      filename: newFilename
+    }
+  }
+
+  static async addSvgIcon(ctx) {
+    console.log('====addSvgIcon====')
+    const { name, path } = ctx.request.body
+    const res = await Icon.create({ name, path })
+    ctx.body = res
+  }
+
+  static async svgIconList(ctx) {
+    const { page, limit, keyword = '' } = ctx.request.body
+
+    // 构建查询条件
+    const query = keyword ? { name: { $regex: keyword, $options: 'i' } } : {}
+
+    const [total, data] = await Promise.all([
+      Icon.countDocuments(query),
+      Icon.find(query)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ _id: -1 })
+    ])
+    ctx.body = {
+      data,
+      total: total
+    }
+    console.log(ctx.body)
+  }
+
+  static async removeSvgIcon(ctx) {
+    const { path } = ctx.request.body
+    const res = await Icon.deleteOne({ path: path })
+    ctx.body = res
+  }
+}
 export default OSSController

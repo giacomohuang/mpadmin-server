@@ -46,41 +46,59 @@ const resourceSchema = new mongoose.Schema({
     type: Number,
     required: false
   },
-  // 路由或外部链接，仅对菜单类型有效
+
+  // 链接类型，仅对菜单类型有效
+  // 1: 路由
+  // 2: 外部链接
+  linkType: {
+    type: Number,
+    required: false
+  },
+  // 路由，仅对功能类型有效
   router: {
     type: String,
+    required: false
+  },
+  // 路由或外部链接，仅对菜单类型有效
+  link: {
+    type: JSON,
+    required: false
+  },
+  // 图标，仅对菜单类型有效
+  icon: {
+    type: String,
+    required: false
+  },
+  // 图标类型，仅对菜单类型有效
+  // 1: system
+  // 2: custom
+  iconType: {
+    type: Number,
     required: false
   },
   // 页面跳转方式，仅对菜单类型有效
   // 1: 当前页面
   // 2: 新页面
-  redirect: {
-    type: String,
+  target: {
+    type: Number,
     required: false
+  },
+  // 是否隐藏，仅对菜单类型有效
+  isHidden: {
+    type: Boolean,
+    required: false,
+    default: false
   },
   // 状态：0禁用 1启用
   status: {
     type: Number,
     required: false,
     default: 1
-  },
-  // 创建时间
-  createTime: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
-  // 更新时间
-  updateTime: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
-  // 操作人
-  operator: {
-    type: String,
-    required: true
   }
 })
+
+resourceSchema.index({ name: 1 })
+resourceSchema.index({ path: 1 })
+resourceSchema.index({ type: 1 })
 
 export default mongoose.model('Resource', resourceSchema)

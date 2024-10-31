@@ -28,8 +28,8 @@ class ResourceController extends BaseController {
   }
 
   static async update(ctx) {
-    console.log('update')
     const item = ctx.request.body
+    console.log('update', item)
     const res = await Resource.replaceOne({ id: item.id }, item)
     ctx.body = res
     console.log(res)
@@ -68,6 +68,12 @@ class ResourceController extends BaseController {
 
     // 使用 $or 操作符来匹配所有符合条件的文档
     const res = await Resource.deleteMany({ path: new RegExp(`^${path}(-\\d+)*$`) })
+    ctx.body = res
+  }
+
+  // 获取菜单列表
+  static async getMenu(ctx) {
+    const res = await Resource.find({ type: 1, isHidden: false }).select('id name path linkType link router order')
     ctx.body = res
   }
 }
