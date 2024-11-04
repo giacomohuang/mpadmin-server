@@ -73,7 +73,7 @@ class ResourceController extends BaseController {
 
   // 获取菜单列表
   static async getMenu(ctx) {
-    const res = await Resource.find({ type: 1, isHidden: false }).select('id name path linkType link router order')
+    const res = await Resource.find({ type: 1, isHidden: false }).select('id name pid path linkType link router order iconType icon target')
     ctx.body = res
   }
 }

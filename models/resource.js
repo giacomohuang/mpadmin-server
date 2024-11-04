@@ -77,10 +77,10 @@ const resourceSchema = new mongoose.Schema({
     required: false
   },
   // 页面跳转方式，仅对菜单类型有效
-  // 1: 当前页面
-  // 2: 新页面
+  // self: 当前页面
+  // _blank: 新页面
   target: {
-    type: Number,
+    type: String,
     required: false
   },
   // 是否隐藏，仅对菜单类型有效
