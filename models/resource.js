@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import i18nPlugin from '../utils/mongoose-i18n.js'
 
 const resourceSchema = new mongoose.Schema({
   // id
@@ -7,11 +8,11 @@ const resourceSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  // 资源名称
+  // 资源名称（多语言）
   name: {
     type: String,
     required: true,
-    unique: true
+    i18n: true
   },
   // 父id
   pid: {
@@ -61,7 +62,7 @@ const resourceSchema = new mongoose.Schema({
   },
   // 路由或外部链接，仅对菜单类型有效
   link: {
-    type: JSON,
+    type: String,
     required: false
   },
   // 图标，仅对菜单类型有效
@@ -97,8 +98,12 @@ const resourceSchema = new mongoose.Schema({
   }
 })
 
-resourceSchema.index({ name: 1 })
+// 修改索引，将name.zh-CN和name.en都加入索引
+resourceSchema.index({ 'name.zh-CN': 1 })
+resourceSchema.index({ 'name.en': 1 })
 resourceSchema.index({ path: 1 })
 resourceSchema.index({ type: 1 })
+
+resourceSchema.plugin(i18nPlugin)
 
 export default mongoose.model('Resource', resourceSchema)

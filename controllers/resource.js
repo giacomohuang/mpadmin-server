@@ -7,12 +7,14 @@ class ResourceController extends BaseController {
     const { pid, isOneLevel } = ctx.request.body
     let resource
     if (isOneLevel) {
-      resource = await Resource.find({ pid: pid })
+      resource = await Resource.find({ pid: pid }).i18n(ctx.headers.locale)
     } else if (pid == null) {
-      resource = await Resource.find()
+      resource = await Resource.find().i18n(ctx.headers.locale)
     } else {
       const regex = new RegExp(`^${pid}-`)
-      resource = await Resource.find({ $or: [{ path: regex }, { id: pid }] })
+      resource = await Resource.find({ $or: [{ path: regex }, { id: pid }] }).i18n(ctx.headers.locale)
+      // console.log('resources', resource)
+      // console.log(resource)
       // resource = await Resource.find({ path: regex })
     }
     ctx.body = resource
@@ -32,7 +34,7 @@ class ResourceController extends BaseController {
     console.log('update', item)
     const res = await Resource.replaceOne({ id: item.id }, item)
     ctx.body = res
-    console.log(res)
+    // console.log(res)
   }
 
   static async reorder(ctx) {
@@ -73,8 +75,12 @@ class ResourceController extends BaseController {
 
   // 获取菜单列表
   static async getMenu(ctx) {
-    const res = await Resource.find({ type: 1, isHidden: false }).select('id name pid path linkType link router order iconType icon target')
-    ctx.body = res
+    // 调试：打印原始查询结果
+    const resources = await Resource.find({ type: 1, isHidden: false }).select('id name pid path linkType link router order iconType icon target').i18n(ctx.headers.locale)
+
+    // console.log('原始查询结果：', JSON.stringify(resources[0], null, 2))
+    // console.log('resources', resources)
+    ctx.body = resources
   }
 }
 
