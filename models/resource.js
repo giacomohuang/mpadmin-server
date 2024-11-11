@@ -98,9 +98,10 @@ const resourceSchema = new mongoose.Schema({
   }
 })
 
-// 修改索引，将name.zh-CN和name.en都加入索引
+// 添加索引
 resourceSchema.index({ 'name.zh-CN': 1 })
 resourceSchema.index({ 'name.en': 1 })
+resourceSchema.index({ 'name.ar': 1 })
 resourceSchema.index({ path: 1 })
 resourceSchema.index({ type: 1 })
 

@@ -2,6 +2,16 @@ import BaseController from './base.js'
 import Resource from '../models/resource.js'
 
 class ResourceController extends BaseController {
+  static async get(ctx) {
+    const { id, locale } = ctx.request.body
+    let resource
+    if (locale) {
+      resource = await Resource.findOne({ id: id }).i18n(locale)
+    } else {
+      resource = await Resource.findOne({ id: id })
+    }
+    ctx.body = resource
+  }
   static async list(ctx) {
     // console.log('aaaa')
     const { pid, isOneLevel } = ctx.request.body

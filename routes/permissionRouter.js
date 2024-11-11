@@ -5,7 +5,8 @@ import RoleController from '../controllers/role.js'
 
 const permissionRouter = new Router()
 
-// Account & My
+// resource & role
+permissionRouter.post('/permission/resource/get', authToken, ResourceController.get)
 permissionRouter.post('/permission/resource/list', authToken, ResourceController.list)
 permissionRouter.post('/permission/resource/add', authToken, ResourceController.add)
 permissionRouter.post('/permission/resource/remove', authToken, ResourceController.remove)
