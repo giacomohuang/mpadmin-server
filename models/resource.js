@@ -100,8 +100,11 @@ const resourceSchema = new mongoose.Schema({
 
 // 添加索引
 resourceSchema.index({ 'name.zh-CN': 1 })
+resourceSchema.index({ 'name.zh-HK': 1 })
 resourceSchema.index({ 'name.en': 1 })
 resourceSchema.index({ 'name.ar': 1 })
+resourceSchema.index({ 'name.ja': 1 })
+resourceSchema.index({ 'name.ko': 1 })
 resourceSchema.index({ path: 1 })
 resourceSchema.index({ type: 1 })
 

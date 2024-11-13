@@ -2,11 +2,16 @@ import BaseController from './base.js'
 import Role from '../models/role.js'
 
 class RoleController extends BaseController {
+  static async get(ctx) {
+    const { id } = ctx.request.body
+    const res = await Role.findOne({ id: id })
+    ctx.body = res
+  }
   static async list(ctx) {
     const { pid } = ctx.request.body
     let res
     if (pid == null) {
-      res = await Role.find()
+      res = await Role.find().i18n(ctx.headers.locale)
     } else {
       const regex = new RegExp(`^${pid}-`)
       res = await Role.find({ $or: [{ path: regex }, { id: pid }] })

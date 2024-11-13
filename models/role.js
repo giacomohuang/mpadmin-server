@@ -1,11 +1,13 @@
 import mongoose from 'mongoose'
+import i18nPlugin from '../utils/mongoose-i18n.js'
 
 const roleSchema = new mongoose.Schema({
   // 角色名称
   name: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    i18n: true
   },
   // id
   id: {
@@ -21,7 +23,8 @@ const roleSchema = new mongoose.Schema({
   // 描述
   description: {
     type: String,
-    required: false
+    required: false,
+    i18n: true
   },
   // 资源
   resources: {
@@ -44,5 +47,15 @@ const roleSchema = new mongoose.Schema({
     required: false
   }
 })
+
+roleSchema.index({ id: 1 })
+roleSchema.index({ 'name.zh-CN': 1 })
+roleSchema.index({ 'name.zh-HK': 1 })
+roleSchema.index({ 'name.en': 1 })
+roleSchema.index({ 'name.ja': 1 })
+roleSchema.index({ 'name.ko': 1 })
+roleSchema.index({ 'name.ar': 1 })
+
+roleSchema.plugin(i18nPlugin)
 
 export default mongoose.model('Role', roleSchema)

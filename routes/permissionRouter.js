@@ -14,6 +14,7 @@ permissionRouter.post('/permission/resource/update', authToken, ResourceControll
 permissionRouter.post('/permission/resource/reorder', authToken, ResourceController.reorder)
 permissionRouter.post('/permission/resource/getMenu', authToken, ResourceController.getMenu)
 
+permissionRouter.post('/permission/role/get', authToken, RoleController.get)
 permissionRouter.post('/permission/role/list', authToken, RoleController.list)
 permissionRouter.post('/permission/role/add', authToken, RoleController.add)
 permissionRouter.post('/permission/role/remove', authToken, RoleController.remove)
