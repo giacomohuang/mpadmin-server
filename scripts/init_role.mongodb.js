@@ -21,7 +21,6 @@ const roles = [
     pid: null,
     path: '1',
     order: 1,
-    level: 1,
     status: 1
   },
   {
@@ -46,7 +45,6 @@ const roles = [
     pid: null,
     path: '2',
     order: 2,
-    level: 1,
     status: 1
   },
   {
@@ -71,7 +69,6 @@ const roles = [
     pid: null,
     path: '3',
     order: 3,
-    level: 1,
     status: 1
   },
   {
@@ -96,7 +93,6 @@ const roles = [
     path: '3-4',
     pid: 3,
     order: 4,
-    level: 2,
     status: 1
   },
   {
@@ -121,7 +117,6 @@ const roles = [
     pid: 3,
     path: '3-5',
     order: 1,
-    level: 2,
     status: 1
   },
   {
@@ -146,7 +141,6 @@ const roles = [
     pid: null,
     path: '6',
     order: 4,
-    level: 1,
     status: 1
   },
   {
@@ -171,7 +165,6 @@ const roles = [
     pid: 6,
     path: '6-7',
     order: 1,
-    level: 2,
     status: 1
   },
   {
@@ -196,7 +189,6 @@ const roles = [
     pid: null,
     path: '8',
     order: 5,
-    level: 1,
     status: 1
   },
   {
@@ -221,7 +213,6 @@ const roles = [
     pid: 8,
     path: '8-9',
     order: 1,
-    level: 2,
     status: 1
   },
   {
@@ -246,7 +237,6 @@ const roles = [
     pid: null,
     path: '10',
     order: 10,
-    level: 1,
     status: 1
   },
   {
@@ -271,7 +261,6 @@ const roles = [
     pid: 10,
     path: '10-11',
     order: 1,
-    level: 2,
     status: 1
   },
   {
@@ -296,7 +285,6 @@ const roles = [
     pid: 11,
     path: '10-11-15',
     order: 1,
-    level: 3,
     status: 1
   },
   {
@@ -321,7 +309,6 @@ const roles = [
     pid: null,
     path: '12',
     order: 12,
-    level: 1,
     status: 1
   },
   {
@@ -346,7 +333,6 @@ const roles = [
     pid: 12,
     path: '12-13',
     order: 1,
-    level: 2,
     status: 1
   },
   {
@@ -371,7 +357,6 @@ const roles = [
     pid: 12,
     path: '12-14',
     order: 2,
-    level: 2,
     status: 1
   }
 ]
