@@ -3,6 +3,7 @@ import { bodyParser } from '@koa/bodyparser'
 import accountRouter from './routes/accountRouter.js'
 import permissionRouter from './routes/permissionRouter.js'
 import verificationRouter from './routes/verificationRouter.js'
+import wenjuanRouter from './routes/wenjuanRouter.js'
 import orgRouter from './routes/orgRouter.js'
 import ossRouter from './routes/ossRouter.js'
 import mongoose from 'mongoose'
@@ -48,6 +49,7 @@ app.use(verificationRouter.routes(), authSign)
 app.use(ossRouter.routes(), authSign)
 app.use(permissionRouter.routes(), authSign)
 app.use(orgRouter.routes(), authSign)
+app.use(wenjuanRouter.routes(), authSign)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

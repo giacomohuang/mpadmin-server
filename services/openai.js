@@ -1,9 +1,10 @@
-import { OpenAIClient, AzureKeyCredential } from '@azure/openai'
+import { AzureOpenAI } from 'openai'
+import { AzureKeyCredential } from '@azure/core-auth'
 
 class OpenAIService {
   static async sendMessage(stream, text) {
     try {
-      const client = new OpenAIClient('https://mai-us-w.openai.azure.com/', new AzureKeyCredential(process.env.OPENAI_API_KEY))
+      const client = new AzureOpenAI('https://mai-us-w.openai.azure.com/', new AzureKeyCredential(process.env.OPENAI_API_KEY))
       const deploymentId = 'gpt-4o'
 
       const messages = [
