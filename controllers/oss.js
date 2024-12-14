@@ -10,8 +10,8 @@ const minioClient = new Minio.Client({
   endPoint: '127.0.0.1',
   port: 9000,
   useSSL: false,
-  accessKey: 'kxt15eSp1QW61RrzDJJs',
-  secretKey: 'NcW4Zd0dL8rgU0SViFSpPBxgsiT4ONTjdnymfwYr'
+  accessKey: process.env.OSS_ACCESS_KEY,
+  secretKey: process.env.OSS_SECRET_KEY
 })
 
 class OSSController extends BaseController {
