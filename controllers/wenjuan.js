@@ -4,7 +4,7 @@ import Wenjuan from '../models/wenjuan.js'
 class WenjuanController extends BaseController {
   static async list(ctx) {
     const { page = 1, limit = 10, query = {}, sort = { updatedAt: -1 } } = ctx.request.body
-    console.log('list params:', { page, limit, query, sort })
+    // console.log('list params:', { page, limit, query, sort })
 
     const wenjuan = await Wenjuan.find(query)
       .sort(sort)
@@ -23,6 +23,7 @@ class WenjuanController extends BaseController {
   }
 
   static async get(ctx) {
+    console.log('get')
     const { id } = ctx.request.body
     const res = await Wenjuan.findOne({ _id: id })
     ctx.body = res
@@ -45,14 +46,14 @@ class WenjuanController extends BaseController {
       res = await Wenjuan.findOneAndUpdate({ _id: _id }, { $set: updateData }, { new: true, runValidators: true })
     }
     ctx.body = res
-    console.log(res)
+    // console.log(res)
   }
 
   // 删除问卷
   static async remove(ctx) {
     console.log('remove')
     const ids = ctx.request.body
-    console.log(ids)
+    // console.log(ids)
     // 删除问卷及其所有子问卷
     const res = await Wenjuan.deleteMany({ _id: { $in: ids } })
     ctx.body = res
