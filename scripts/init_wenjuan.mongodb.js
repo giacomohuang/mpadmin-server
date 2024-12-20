@@ -7,7 +7,7 @@ const wenjuan = [
     data: [
       {
         title: '题目1 多选题',
-        id: '0Ahjdf84f',
+        id: '0AhjUdf84f',
         type: 'MultiChoice',
         required: true,
         options: [
@@ -15,6 +15,21 @@ const wenjuan = [
           { text: '选项2', value: 1, id: '1Ghjsd74j' },
           { text: '选项3', value: 2, id: '2GhGjk5dM' }
         ]
+      },
+      {
+        id: 'K9IwrM04qeJJ',
+        title: '<p>请给这个产品打分</p>',
+        type: 'Rate',
+        required: false,
+        minScore: 7,
+        maxScore: 10,
+        step: 1,
+        value: 10,
+        tips: [],
+        customIcon: null,
+        showLabels: true,
+        minLabel: '最低',
+        maxLabel: '最高'
       },
       {
         title: '题目2 单选题',
