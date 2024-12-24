@@ -4,6 +4,13 @@ const wenjuanSchema = new mongoose.Schema({
   name: {
     type: String
   },
+  draft: {
+    type: JSON
+  },
+  isPublish: {
+    type: Boolean,
+    default: false
+  },
   settings: {
     type: Object
   },

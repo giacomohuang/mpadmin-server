@@ -4,6 +4,7 @@ const wenjuan = [
     name: '问卷名称',
     createdAt: new Date(),
     updatedAt: new Date(),
+    isPublish: true,
     data: [
       {
         title: '题目1 多选题',

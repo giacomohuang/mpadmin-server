@@ -48,7 +48,7 @@ const roleSchema = new mongoose.Schema({
   }
 })
 
-roleSchema.index({ id: 1 })
+// roleSchema.index({ id: 1 })
 roleSchema.index({ 'name.zh-CN': 1 })
 roleSchema.index({ 'name.zh-HK': 1 })
 roleSchema.index({ 'name.en': 1 })

@@ -27,6 +27,7 @@ class WenjuanController extends BaseController {
     const { id } = ctx.request.body
     const res = await Wenjuan.findOne({ _id: id })
     ctx.body = res
+    console.log(res)
   }
 
   static async update(ctx) {
