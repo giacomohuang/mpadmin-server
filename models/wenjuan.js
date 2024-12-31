@@ -11,6 +11,10 @@ const wenjuanSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isDraft: {
+    type: Boolean,
+    default: false
+  },
   settings: {
     type: Object
   },

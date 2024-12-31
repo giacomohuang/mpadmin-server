@@ -6,12 +6,11 @@ class WenjuanController extends BaseController {
     const { page = 1, limit = 10, query = {}, sort = { updatedAt: -1 } } = ctx.request.body
     // console.log('list params:', { page, limit, query, sort })
 
-    const wenjuan = await Wenjuan.find(query)
+    const wenjuan = await Wenjuan.find(query, { isDraft: 1, isPublish: 1, draft: { name: 1 }, name: 1, updatedAt: 1 })
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit)
       .exec()
-
     const total = await Wenjuan.countDocuments(query)
     ctx.body = {
       wenjuan,
