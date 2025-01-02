@@ -1,5 +1,6 @@
 import BaseController from './base.js'
 import Wenjuan from '../models/wenjuan.js'
+import WenjuanVersion from '../models/wenjuanVersion.js'
 
 class WenjuanController extends BaseController {
   static async list(ctx) {
@@ -29,24 +30,61 @@ class WenjuanController extends BaseController {
     console.log(res)
   }
 
-  static async update(ctx) {
-    console.log('update')
-    const { _id, ...updateData } = ctx.request.body
+  static async getVersion(ctx) {
+    const { id, version } = ctx.request.body
+    const res = await WenjuanVersion.findOne({ wenjuanId: id, version: version })
+    ctx.body = res
+    console.log(res)
+  }
 
+  static async getVersionList(ctx) {
+    const { id } = ctx.request.body
+    const res = await WenjuanVersion.find({ wenjuanId: id }).select('version operatorId createdAt').sort({ version: -1 })
+    ctx.body = res
+    console.log(res)
+  }
+
+  static async update(ctx) {
+    const { _id, ...updateData } = ctx.request.body
+    const accountId = ctx.request.headers['accountid']
     // 添加 updatedAt 字段
     updateData.updatedAt = new Date()
 
     let res
+    // 如果没有 _id，创建新数据
     if (!_id) {
-      // 如果没有 _id，创建新数据
       const newWenjuan = new Wenjuan(updateData)
       res = await newWenjuan.save()
-    } else {
-      // 如果有 _id，更新已存在的数据
-      res = await Wenjuan.findOneAndUpdate({ _id: _id }, { $set: updateData }, { new: true, runValidators: true })
+    }
+    // 如果有 _id，更新已存在的数据
+    else {
+      // 如果传入的参数有isPublish, 执行发布操作，则同时创建wenjuanVersion记录
+      if (updateData.isPublish) {
+        try {
+          delete updateData.version
+          res = await Wenjuan.findOneAndUpdate({ _id: _id }, { $set: updateData, $inc: { version: 1 } }, { new: true, runValidators: true }).select('version')
+          // 创建新版本
+          const newWenjuanVersion = new WenjuanVersion({
+            wenjuanId: _id,
+            version: res.version,
+            name: updateData.name,
+            settings: updateData.settings,
+            data: updateData.data,
+            operatorId: accountId
+          })
+          await newWenjuanVersion.save()
+        } catch (error) {
+          throw error
+        }
+      }
+      // 如果传入的参数没有isPublish, 则只更新数据（草稿）
+      else {
+        console.log('updateData:', updateData)
+        res = await Wenjuan.findOneAndUpdate({ _id: _id }, { $set: updateData }, { new: true, runValidators: true })
+      }
     }
     ctx.body = res
-    // console.log(res)
+    console.log(res)
   }
 
   // 删除问卷

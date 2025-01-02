@@ -15,6 +15,10 @@ const wenjuanSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  version: {
+    type: Number,
+    default: 0
+  },
   settings: {
     type: Object
   },
