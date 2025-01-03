@@ -2,6 +2,8 @@ const wenjuan = [
   {
     name: '手机品牌接受度调查问卷',
     version: 0,
+    isPublish: false,
+    draft: null,
     data: [
       {
         id: 'Kj8mN9pQ4rT2',
@@ -97,9 +99,9 @@ const wenjuan = [
       allowMultiSubmit: false,
       timeLimit: 10,
       themeColor: '#1890ff',
-      coverImage: 'survey-cover.jpg',
+      coverImage: '/c3/97/d9/c397d949-6028-4e98-9027-1b9ddf49ef0c.jpg',
       submitSuccessMessage: '感谢您参与本次手机品牌调查！',
-      backgroundImage: 'bg.jpg'
+      backgroundImage: '/a0/e8/3a/a0e83a2f-1b40-4b93-b325-89d68b496ef7.jpg'
     },
     logic: {
       conditions: [

@@ -11,9 +11,11 @@ const wenjuanSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  isDraft: {
-    type: Boolean,
-    default: false
+  teamId: {
+    type: String
+  },
+  orgId: {
+    type: String
   },
   version: {
     type: Number,

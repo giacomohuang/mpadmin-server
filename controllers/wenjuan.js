@@ -7,7 +7,7 @@ class WenjuanController extends BaseController {
     const { page = 1, limit = 10, query = {}, sort = { updatedAt: -1 } } = ctx.request.body
     // console.log('list params:', { page, limit, query, sort })
 
-    const wenjuan = await Wenjuan.find(query, { isDraft: 1, isPublish: 1, draft: { name: 1 }, name: 1, updatedAt: 1 })
+    const wenjuan = await Wenjuan.find(query, { isPublish: 1, draft: { name: 1 }, name: 1, updatedAt: 1 })
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit)
@@ -38,10 +38,22 @@ class WenjuanController extends BaseController {
   }
 
   static async getVersionList(ctx) {
-    const { id } = ctx.request.body
-    const res = await WenjuanVersion.find({ wenjuanId: id }).select('version operatorId createdAt').sort({ version: -1 })
-    ctx.body = res
-    console.log(res)
+    const { id, page = 1, limit = 10 } = ctx.request.body
+
+    const res = await WenjuanVersion.find({ wenjuanId: id })
+      .select('version operatorId createdAt')
+      .sort({ version: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec()
+    const total = await WenjuanVersion.countDocuments({ wenjuanId: id })
+    ctx.body = {
+      list: res,
+      total: total,
+      pages: Math.ceil(total / limit),
+      page: page,
+      limit: limit
+    }
   }
 
   static async update(ctx) {
@@ -61,7 +73,6 @@ class WenjuanController extends BaseController {
       // 如果传入的参数有isPublish, 执行发布操作，则同时创建wenjuanVersion记录
       if (updateData.isPublish) {
         try {
-          delete updateData.version
           res = await Wenjuan.findOneAndUpdate({ _id: _id }, { $set: updateData, $inc: { version: 1 } }, { new: true, runValidators: true }).select('version')
           // 创建新版本
           const newWenjuanVersion = new WenjuanVersion({
